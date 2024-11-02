@@ -1,4 +1,6 @@
-﻿namespace WaveFunctionCollapseImageGenerator.ViewModels.MainForm;
+﻿using WaveFunctionCollapseImageGenerator.ViewModels.MainForm.Components;
+
+namespace WaveFunctionCollapseImageGenerator.ViewModels.MainForm;
 
 public class MainFormViewModel
 {

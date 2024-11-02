@@ -1,14 +1,16 @@
 ﻿using WaveFunctionCollapseImageGenerator.Models.Cells;
+using WaveFunctionCollapseImageGenerator.Models.Common;
+using WaveFunctionCollapseImageGenerator.Models.Tiles;
 
 namespace WaveFunctionCollapseImageGenerator.Models;
 
 // TODO: Backtracking at level of simulation
-public class WaveFunctionCollapseSimulation(CellGrid grid, Ruleset ruleset)
+public class WaveFunctionCollapseSimulation(CellGrid grid, Ruleset ruleset, Random random)
 {
     private readonly CellGrid _grid = grid;
     private readonly Ruleset _ruleset = ruleset;
 
-    private readonly Random _random = new();
+    private readonly Random _random = random;
 
     // Possible improvements:
     // TODO: Multiple collapses per step

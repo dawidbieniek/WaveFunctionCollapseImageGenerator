@@ -1,12 +1,10 @@
-﻿using WaveFunctionCollapseImageGenerator.Models.Tiles;
+﻿using WaveFunctionCollapseImageGenerator.Models.Common;
 
-namespace WaveFunctionCollapseImageGenerator.Models.Cells;
+namespace WaveFunctionCollapseImageGenerator.Models.Tiles;
 
 [Serializable]
-public class Ruleset
+public record Ruleset(Dictionary<(int state, Direction dir), int[]> DisallowedNeighbours)
 {
-    public Dictionary<(int state, Direction dir), int[]> DisallowedNeighbours = [];
-
     public static Ruleset FromTileList(IList<Tile> tiles)
     {
         Dictionary<(int state, Direction dir), int[]> rulesetMap = [];
@@ -29,6 +27,6 @@ public class Ruleset
             }
         }
 
-        return new() { DisallowedNeighbours = rulesetMap };
+        return new(rulesetMap);
     }
 }

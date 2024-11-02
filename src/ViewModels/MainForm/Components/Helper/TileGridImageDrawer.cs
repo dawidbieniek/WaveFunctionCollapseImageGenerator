@@ -1,7 +1,7 @@
 ﻿using WaveFunctionCollapseImageGenerator.Models.Cells;
 using WaveFunctionCollapseImageGenerator.Models.Tiles;
 
-namespace WaveFunctionCollapseImageGenerator.ViewModels.MainForm;
+namespace WaveFunctionCollapseImageGenerator.ViewModels.MainForm.Components.Helper;
 
 public class TileGridImageDrawer
 {

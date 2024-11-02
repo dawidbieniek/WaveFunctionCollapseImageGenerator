@@ -1,4 +1,4 @@
-﻿namespace WaveFunctionCollapseImageGenerator.Models.Cells;
+﻿namespace WaveFunctionCollapseImageGenerator.Models.Common;
 
 public enum Direction
 {

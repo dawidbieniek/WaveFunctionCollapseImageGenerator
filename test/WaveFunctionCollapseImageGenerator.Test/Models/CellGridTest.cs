@@ -8,7 +8,7 @@ public class CellGridTest
     [TestMethod]
     public void GetNeighboursOfCell_ReturnsCorrectNeighbours_InMiddle()
     {
-        CellGrid grid = new(3, 3, false, []);
+        CellGrid grid = new(3, 3, false, [], new(0));
 
         (Cell? up, Cell? right, Cell? down, Cell? left) = grid.GetNeighboursOfCell(1, 1);
 
@@ -21,7 +21,7 @@ public class CellGridTest
     [TestMethod]
     public void GetNeighboursOfCell_ReturnsCorrectNeighbours_AtEdgeWithoutWrapping()
     {
-        CellGrid grid = new(3, 3, false, []);
+        CellGrid grid = new(3, 3, false, [], new(0));
 
         (Cell? up, Cell? right, Cell? down, Cell? left) = grid.GetNeighboursOfCell(0, 0);
 
@@ -34,7 +34,7 @@ public class CellGridTest
     [TestMethod]
     public void GetNeighboursOfCell_ReturnsCorrectNeighbours_AtEdgeWithWrapping()
     {
-        CellGrid grid = new(3, 3, true, []);
+        CellGrid grid = new(3, 3, true, [], new(0));
 
         (Cell? up, Cell? right, Cell? down, Cell? left) = grid.GetNeighboursOfCell(0, 0);
 

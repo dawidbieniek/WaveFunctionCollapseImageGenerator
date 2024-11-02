@@ -1,6 +1,6 @@
 ﻿using WaveFunctionCollapseImageGenerator.Models.Tiles;
 
-namespace WaveFunctionCollapseImageGenerator.ViewModels.MainForm;
+namespace WaveFunctionCollapseImageGenerator.ViewModels.MainForm.Components;
 
 public class TilesetViewModel : ITilesetProvider
 {

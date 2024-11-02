@@ -1,4 +1,4 @@
-﻿using WaveFunctionCollapseImageGenerator.Models.Cells;
+﻿using WaveFunctionCollapseImageGenerator.Models.Common;
 using WaveFunctionCollapseImageGenerator.Models.Tiles;
 
 namespace WaveFunctionCollapseImageGenerator.Test.Models;

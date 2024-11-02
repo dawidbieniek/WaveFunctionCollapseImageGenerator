@@ -5,21 +5,24 @@
 /// </summary>
 public class CellGrid
 {
-    private Cell[,] _cells;
-    private bool _edgeWrapping;
+    private readonly Cell[,] _cells;
+    private readonly bool _edgeWrapping;
+    private readonly Random _random;
 
-    public CellGrid(int width, int height, bool edgeWrapping, IList<int> possibleCellStates)
+    public CellGrid(int width, int height, bool edgeWrapping, IList<int> possibleCellStates, Random random)
     {
         _edgeWrapping = edgeWrapping;
+        _random = random;
+
         Width = width;
         Height = height;
 
         _cells = new Cell[height, width];
 
-        for (int i = 0; i < Height; i++)
-            for (int j = 0; j < Width; j++)
+        for (int i = 0; i < height; i++)
+            for (int j = 0; j < width; j++)
             {
-                _cells[i, j] = new([.. possibleCellStates], new());
+                _cells[i, j] = new([.. possibleCellStates], _random);
             }
     }
 
@@ -38,7 +41,8 @@ public class CellGrid
         int upIndex = _edgeWrapping ? (y - 1 + Height) % Height : y - 1;
         int downIndex = _edgeWrapping ? (y + 1) % Height : y + 1;
 
-        return (
+        return
+        (
             upIndex >= 0 ? _cells[upIndex, x] : null,
             rightIndex < Width ? _cells[y, rightIndex] : null,
             downIndex < Height ? _cells[downIndex, x] : null,
@@ -48,7 +52,10 @@ public class CellGrid
 
     public IList<(Cell cell, int x, int y)> GetLowestEntropyCollapsableCellsWithCoordinates()
     {
-        int minEntropy = _cells.Cast<Cell>().Where(c => !c.Collapsed).Min(cell => cell.Entropy);
+        int minEntropy = _cells.Cast<Cell>()
+            .Where(c => !c.Collapsed)
+            .Min(cell => cell.Entropy);
+
         List<(Cell cell, int x, int y)> minEntropyCellCoords = [];
 
         for (int i = 0; i < _cells.GetLength(0); i++)

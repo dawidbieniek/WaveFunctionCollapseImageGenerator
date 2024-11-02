@@ -1,6 +1,4 @@
-﻿using WaveFunctionCollapseImageGenerator.Models.Cells;
-
-namespace WaveFunctionCollapseImageGenerator.Models.Tiles;
+﻿namespace WaveFunctionCollapseImageGenerator.Models.Tiles;
 
 public class TilesetBuilder
 {
@@ -40,16 +38,11 @@ public class TilesetBuilder
 
     public Tileset Build()
     {
-        Ruleset ruleset = new();
+        Ruleset ruleset = new([]);
 
         if (_buildRuleset)
             ruleset = Ruleset.FromTileList(_tiles);
 
-        return new()
-        {
-            Images = [.. _images],
-            Tiles = [.. _tiles],
-            Ruleset = ruleset
-        };
+        return new([.. _images], [.. _tiles], ruleset);
     }
 }
