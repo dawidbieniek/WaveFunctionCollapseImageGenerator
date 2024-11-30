@@ -5,9 +5,10 @@
 /// </summary>
 public class CellGrid
 {
-    private readonly Cell[,] _cells;
     private readonly bool _edgeWrapping;
     private readonly Random _random;
+
+    private Cell[,] _cells;
 
     public CellGrid(int width, int height, bool edgeWrapping, IList<int> possibleCellStates, Random random)
     {
@@ -50,21 +51,44 @@ public class CellGrid
         );
     }
 
-    public IList<(Cell cell, int x, int y)> GetLowestEntropyCollapsableCellsWithCoordinates()
+    public IList<CellWithCoordinates> GetLowestEntropyCollapsableCellsWithCoordinates()
     {
         int minEntropy = _cells.Cast<Cell>()
             .Where(c => !c.Collapsed)
             .Min(cell => cell.Entropy);
 
-        List<(Cell cell, int x, int y)> minEntropyCellCoords = [];
+        List<CellWithCoordinates> minEntropyCellCoords = [];
 
         for (int i = 0; i < _cells.GetLength(0); i++)
             for (int j = 0; j < _cells.GetLength(1); j++)
             {
                 if (_cells[i, j].Entropy == minEntropy && !_cells[i, j].Collapsed)
-                    minEntropyCellCoords.Add((_cells[i, j], j, i));
+                    minEntropyCellCoords.Add(new(_cells[i, j], j, i));
             }
 
         return minEntropyCellCoords;
     }
+
+    /// <summary>
+    /// Creates clone of all <see cref="Cell"/> s
+    /// </summary>
+    public Cell[,] CreateCellSnapshot()
+    {
+        Cell[,] clonedCells = new Cell[Height, Width];
+
+        for (int i = 0; i < Height; i++)
+            for (int j = 0; j < Width; j++)
+            {
+                clonedCells[i, j] = new(this[i, j]);
+            }
+
+        return clonedCells;
+    }
+
+    /// <summary>
+    /// Uses previously created clone of <see cref="Cell"/> s ( <see cref="CreateCellSnapshot"/>) to
+    /// apply previous state
+    /// </summary>
+    /// <param name="cells"> </param>
+    public void ApplyCellSnapshot(Cell[,] cells) => _cells = cells;
 }

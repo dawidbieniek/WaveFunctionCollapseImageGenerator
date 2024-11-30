@@ -45,7 +45,7 @@ public static class TransformExtensions
     /// </summary>
     public static Bitmap TransformedImage(this Transform transform, Bitmap bitmap)
     {
-        Bitmap transformed = (Bitmap)bitmap.Clone();
+        Bitmap transformed = new(bitmap);
         transformed.RotateFlip((RotateFlipType)transform);
         return transformed;
     }

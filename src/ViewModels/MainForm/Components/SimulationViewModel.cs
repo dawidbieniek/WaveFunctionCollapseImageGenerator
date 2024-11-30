@@ -1,7 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-using WaveFunctionCollapseImageGenerator.Models;
+using WaveFunctionCollapseImageGenerator.Models.Simulation;
+using WaveFunctionCollapseImageGenerator.Models.Simulation.Backtracking;
 using WaveFunctionCollapseImageGenerator.ViewModels.MainForm.Components;
 using WaveFunctionCollapseImageGenerator.ViewModels.MainForm.Components.Helper;
 
@@ -14,7 +15,7 @@ public partial class SimulationViewModel : ObservableObject
 
     private readonly TileGridImageDrawer _displayImageDrawer;
 
-    private WaveFunctionCollapseSimulation? _simulation;
+    private IWFCSimulation? _simulation;
     private Random? _random;
 
     [ObservableProperty]
@@ -53,7 +54,7 @@ public partial class SimulationViewModel : ObservableObject
         if (!SimulationStarted)
             StartSimulation();
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 100; i++)
             _simulation!.Step();
         Image image = _displayImageDrawer.DrawTileGrid(_gridProvider.Grid!);
         DisplayImageSize = image.Size;
@@ -73,7 +74,7 @@ public partial class SimulationViewModel : ObservableObject
         SimulationStarted = true;
 
         _random = RandomizeSeed ? new Random() : new Random(Seed);
-        _simulation = new(_gridProvider.CreateGrid(_random), _tilesetProvider.Tileset.Ruleset, _random);
+        _simulation = WFCSimulationFactory.CreateSimulation(_gridProvider.CreateGrid(_random), _tilesetProvider.Tileset.Ruleset, _random, UseBacktracking, BacktrackingDepth);
         _gridProvider.LockChanges();
     }
 }
