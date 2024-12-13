@@ -1,17 +1,50 @@
-namespace WaveFunctionCollapseImageGenerator
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+
+using WaveFunctionCollapseImageGenerator.Common.Loggers;
+using WaveFunctionCollapseImageGenerator.ViewModels.MainForm;
+using WaveFunctionCollapseImageGenerator.ViewModels.MainForm.Components;
+
+namespace WaveFunctionCollapseImageGenerator;
+
+internal static class Program
 {
-    internal static class Program
+    public static IServiceProvider ServiceProvider { get; private set; } = null!;
+
+    /// <summary>
+    /// The main entry point for the application.
+    /// </summary>
+    [STAThread]
+    private static void Main()
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        private static void Main()
+        ApplicationConfiguration.Initialize();
+
+        IHostBuilder builder = Host.CreateDefaultBuilder();
+
+        builder.ConfigureLogging((ILoggingBuilder logging) =>
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
-            ApplicationConfiguration.Initialize();
-            Application.Run(new MainForm());
-        }
+            logging.ClearProviders();
+            logging.AddRtbLogger();
+        });
+
+        builder.ConfigureServices((context, services) => ConfigureServices(services));
+
+        IHost app = builder.Build();
+        ServiceProvider = app.Services;
+
+        Application.Run(ServiceProvider.GetRequiredService<MainForm>());
+    }
+
+    private static void ConfigureServices(IServiceCollection services)
+    {
+        services.AddTransient<MainFormViewModel>()
+            .AddTransient<TilesetViewModel>()
+            .AddTransient<GridViewModel>()
+            .AddTransient<ITilesetProvider>(sp => sp.GetRequiredService<TilesetViewModel>())
+            .AddTransient<IGridProvider>(sp => sp.GetRequiredService<GridViewModel>())
+            .AddTransient<SimulationViewModel>();
+
+        services.AddSingleton<MainForm>();
     }
 }

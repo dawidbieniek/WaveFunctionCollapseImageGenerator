@@ -6,12 +6,13 @@ namespace WaveFunctionCollapseImageGenerator
 {
     public partial class MainForm : Form
     {
-        public MainForm()
+        public MainForm(MainFormViewModel viewModel)
         {
-            ViewModel = new();
+            ViewModel = viewModel;
 
             InitializeComponent();
 
+            binding_viewModel.DataSource = viewModel;
             binding_gridViewModel.DataSource = ViewModel.GridViewModel;
             binding_simulationViewModel.DataSource = ViewModel.SimulationViewModel;
         }

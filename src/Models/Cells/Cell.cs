@@ -47,7 +47,7 @@ public class Cell(IList<int> possibleStates, Random random)
     public int Collapse(int? stateToCollapseTo = null)
     {
         if (_possibleStates.Count == 0)
-            throw new InvalidOperationException("Cell cannot be collapsed. It has no possible states");
+            throw new InvalidOperationException("Cell cannot be collapsed, it has no possible states");
 
         int newState;
         if (stateToCollapseTo is not null)

@@ -1,11 +1,16 @@
-﻿using WaveFunctionCollapseImageGenerator.Models.Cells;
+﻿using Microsoft.Extensions.Logging;
+
+using WaveFunctionCollapseImageGenerator.Models.Cells;
 using WaveFunctionCollapseImageGenerator.Models.Common;
+using WaveFunctionCollapseImageGenerator.Models.Exceptions;
 using WaveFunctionCollapseImageGenerator.Models.Tiles;
 
 namespace WaveFunctionCollapseImageGenerator.Models.Simulation.Backtracking;
 
-public class WaveFunctionCollapseSimulationWithBacktracking(CellGrid grid, Ruleset ruleset, Random random, int snapshotStackSize) : WaveFunctionCollapseSimulation(grid, ruleset, random)
+public class WaveFunctionCollapseSimulationWithBacktracking(CellGrid grid, Ruleset ruleset, Random random, int snapshotStackSize, ILogger<WaveFunctionCollapseSimulationWithBacktracking> logger) : WaveFunctionCollapseSimulation(grid, ruleset, random)
 {
+    private readonly ILogger<WaveFunctionCollapseSimulationWithBacktracking> _logger = logger;
+
     private readonly DropoutStack<SimulationSnapshot> _snapshotStack = new(snapshotStackSize);
 
     //TODO:- catch exceptions in vm
@@ -19,7 +24,7 @@ public class WaveFunctionCollapseSimulationWithBacktracking(CellGrid grid, Rules
         CellWithCoordinates cell = potentialCells[collapsingCellIndex];
 
         if (!BacktrackingStep(cell))
-            throw new InvalidOperationException("Cannot step simulation - backtracking is needed, but not possible");
+            throw new BacktrackingStackEmptyException();
     }
 
     private bool BacktrackingStep(CellWithCoordinates cell)
@@ -51,7 +56,8 @@ public class WaveFunctionCollapseSimulationWithBacktracking(CellGrid grid, Rules
             return false;
 
         CellWithCoordinates snapshotCell = ApplySnapshot(_snapshotStack.Pop());
-        // Try again from snapshot
+        _logger.LogInformation("Backtracking: {count} snapshots left", _snapshotStack.Count);
+
         return BacktrackingStep(snapshotCell);
     }
 
