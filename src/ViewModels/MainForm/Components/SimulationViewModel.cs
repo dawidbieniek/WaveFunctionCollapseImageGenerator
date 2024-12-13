@@ -1,10 +1,12 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Windows.Forms.Design;
+
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using Microsoft.Extensions.Logging;
 
-using WaveFunctionCollapseImageGenerator.Models.Exceptions;
 using WaveFunctionCollapseImageGenerator.Models.Simulation;
+using WaveFunctionCollapseImageGenerator.Models.Simulation.Runner;
 using WaveFunctionCollapseImageGenerator.ViewModels.MainForm.Components;
 using WaveFunctionCollapseImageGenerator.ViewModels.MainForm.Components.Helper;
 
@@ -16,13 +18,8 @@ public partial class SimulationViewModel : ObservableObject
 
     private readonly ITilesetProvider _tilesetProvider;
     private readonly IGridProvider _gridProvider;
-
-    private readonly TileGridImageDrawer _displayImageDrawer;
-
+    private readonly IImageDisplayer _imageDisplayer;
     private readonly WFCSimulationFactory _wfcSimulationFactory;
-
-    private IWFCSimulation? _simulation;
-    private Random? _random;
 
     [ObservableProperty]
     private bool _useBacktracking = false;
@@ -35,85 +32,135 @@ public partial class SimulationViewModel : ObservableObject
     private int _seed = 0;
 
     [ObservableProperty]
-    private Image _displayImage = new Bitmap(100, 100);
+    private bool _enableRunButton = true;
     [ObservableProperty]
-    private Size _displayImageSize = new(100, 100);
-
-    //TODO: Bind to some text display that says the simulation is running
+    private bool _enablePauseButton = true;
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(UseSeed))]
-    private bool _simulationStarted = false;
-
+    private bool _enableStepButton = true;
     [ObservableProperty]
-    private bool _canContinueSimulation = true;
+    private bool _enableResetButton = true;
 
-    public SimulationViewModel(ITilesetProvider tilesetProvider, IGridProvider gridProvider, ILoggerFactory loggerFactory)
+    private SimulationRunner? _simulationRunner;
+
+    public SimulationViewModel(ITilesetProvider tilesetProvider, IGridProvider gridProvider, IImageDisplayer imageDisplayer, ILoggerFactory loggerFactory)
     {
         _tilesetProvider = tilesetProvider;
         _gridProvider = gridProvider;
+        _imageDisplayer = imageDisplayer;
         _logger = loggerFactory.CreateLogger<SimulationViewModel>();
 
         _wfcSimulationFactory = new(loggerFactory);
 
-        _displayImageDrawer = new(_tilesetProvider.Tileset);
+        UpdateButtonEnablement();
     }
 
-    public bool UseSeed => !RandomizeSeed && !SimulationStarted;
+    public bool UseSeed => !RandomizeSeed;
 
     [RelayCommand]
     public void StepSimulation()
     {
-        if (!SimulationStarted)
-            StartSimulation();
+        if (_simulationRunner is null)
+            CreateSimulation();
 
-        if (!CanContinueSimulation)
-            return;
-
-        try
-        {
-            _simulation!.Step();
-            Image image = _displayImageDrawer.DrawTileGrid(_gridProvider.Grid!);
-            DisplayImageSize = image.Size;
-            DisplayImage = image;
-        }
-        catch (InvalidCellCollapseException ex)
-        {
-            _logger.LogError("Simulation stopped: {message}", ex.Message);
-            CanContinueSimulation = false;
-            Image image = _displayImageDrawer.DrawTileGridWithInvalidCellIndicator(_gridProvider.Grid!, ex.InvalidCell.X, ex.InvalidCell.Y);
-            DisplayImage = image;
-        }
-        catch (BacktrackingStackEmptyException)
-        {
-            _logger.LogError("Simulation stopped: simulation needs to backtrack, but snapshot stack is empty. Consider using bigger stack size");
-            CanContinueSimulation = false;
-        }
-
+        _simulationRunner!.StepSimulation();
     }
 
     [RelayCommand]
     public void ResetSimulation()
     {
-        if (!SimulationStarted)
+        if (_simulationRunner is null)
             return;
 
-        SimulationStarted = false;
-        CanContinueSimulation = true;
+        _simulationRunner.StopSimulation();
+        _simulationRunner = null;
 
+        UpdateButtonEnablement();
         _gridProvider.UnlockChanges();
-
 
         _logger.LogInformation("Simulation reset");
     }
 
-    private void StartSimulation()
+    [RelayCommand]
+    public void RunSimulation()
     {
-        SimulationStarted = true;
+        if (_simulationRunner is null)
+            CreateSimulation();
 
-        _random = RandomizeSeed ? new Random() : new Random(Seed);
-        _simulation = _wfcSimulationFactory.CreateSimulation(_gridProvider.CreateGrid(_random), _tilesetProvider.Tileset.Ruleset, _random, UseBacktracking, BacktrackingDepth);
-        _gridProvider.LockChanges();
+        _simulationRunner!.ContinueSimulation();
 
         _logger.LogInformation("Simulation started");
+    }
+
+    [RelayCommand]
+    public async Task PauseSimulation()
+    {
+        if (_simulationRunner is null)
+            return;
+
+        if (_simulationRunner.IsSimulationRunning)
+        {
+            await _simulationRunner.PauseSimulationAsync();
+            _logger.LogInformation("Simulation paused");
+        }
+    }
+
+    private void CreateSimulation()
+    {
+        Random random = RandomizeSeed ? new Random() : new Random(Seed);
+        _simulationRunner = new(_wfcSimulationFactory.CreateSimulation(_gridProvider.CreateGrid(random), _tilesetProvider.Tileset.Ruleset, random, UseBacktracking, BacktrackingDepth));
+        // Relaying property changes
+        _simulationRunner.PropertyChanged += (s, e) => Application.OpenForms[0]!.Invoke(() =>
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(_simulationRunner.IsSimulationRunning):
+                case nameof(_simulationRunner.IsSimulationStarted):
+                case nameof(_simulationRunner.CanContinueSimulation):
+                    UpdateButtonEnablement();
+                    break;
+            }
+        });
+        _simulationRunner.OnSimulationStep += (s, e) => Application.OpenForms[0]!.Invoke(() =>
+        {
+            _imageDisplayer.DisplayGrid(e.CurrentSimulationCellGrid);
+        });
+        _simulationRunner.OnBacktrackingStackEmptyError += (s, e) => Application.OpenForms[0]!.Invoke(() =>
+        {
+            _logger.LogError("Simulation stopped: simulation needs to backtrack, but snapshot stack is empty. Consider using bigger stack size");
+            UpdateButtonEnablement();
+        });
+        _simulationRunner.OnInvalidCellCollapseError += (s, e) => Application.OpenForms[0]!.Invoke(() =>
+        {
+            _logger.LogError("Simulation stopped: {message}", e.Exception.Message);
+            UpdateButtonEnablement();
+
+            _imageDisplayer.DisplayGridWithErrorCell(e.SimulationCellGrid, e.Exception.InvalidCell.X, e.Exception.InvalidCell.Y);
+        });
+        _simulationRunner.OnSimulationFinished += (s, e) => Application.OpenForms[0]!.Invoke(() =>
+        {
+            _logger.LogInformation("Simulation finished");
+        });
+
+
+        _gridProvider.LockChanges();
+
+        _logger.LogInformation("Simulation created");
+    }
+
+    private void UpdateButtonEnablement()
+    {
+        if (_simulationRunner is null)
+        {
+            EnableRunButton = true;
+            EnablePauseButton = false;
+            EnableStepButton = true;
+            EnableResetButton = false;
+            return;
+        }
+
+        EnableRunButton = !_simulationRunner.IsSimulationRunning && _simulationRunner.CanContinueSimulation;
+        EnablePauseButton = _simulationRunner.IsSimulationStarted && _simulationRunner.IsSimulationRunning;
+        EnableStepButton = EnableRunButton;
+        EnableResetButton = _simulationRunner.IsSimulationStarted;
     }
 }

@@ -11,21 +11,22 @@ public class TileGridImageDrawer
     private readonly Bitmap _uncollapsedCellImage;
 
     private readonly Tileset _tileSet;
-    private readonly Size _cellSize;
 
     public TileGridImageDrawer(Tileset tileset)
     {
         _tileSet = tileset;
-        _cellSize = new(_tileSet.Images[0].Width, _tileSet.Images[0].Height);
+        CellSize = new(_tileSet.Images[0].Width, _tileSet.Images[0].Height);
 
-        _uncollapsedCellImage = new(_cellSize.Width, _cellSize.Height);
+        _uncollapsedCellImage = new(CellSize.Width, CellSize.Height);
         using Graphics g = Graphics.FromImage(_uncollapsedCellImage);
         g.Clear(UncollapsedCellColor);
     }
 
+    public Size CellSize { get; }
+
     public Image DrawTileGrid(CellGrid grid)
     {
-        Bitmap bitmap = new(_cellSize.Width * grid.Width, _cellSize.Height * grid.Height);
+        Bitmap bitmap = new(CellSize.Width * grid.Width, CellSize.Height * grid.Height);
 
         using Graphics g = Graphics.FromImage(bitmap);
         for (int i = 0; i < grid.Height; i++)
@@ -35,9 +36,17 @@ public class TileGridImageDrawer
                     ? _uncollapsedCellImage
                     : _tileSet.ImageFromTileIndex(grid[i, j].CurrentState!.Value);
 
-                g.DrawImage(cellImage, new Point(j * _cellSize.Width, i * _cellSize.Height));
+                g.DrawImage(cellImage, new Point(j * CellSize.Width, i * CellSize.Height));
             }
 
+        return bitmap;
+    }
+
+    public Image DrawEmptyImage(Size gridSize)
+    {
+        Bitmap bitmap = new(CellSize.Width * gridSize.Width, CellSize.Height * gridSize.Height);
+        using Graphics g = Graphics.FromImage(bitmap);
+        g.Clear(UncollapsedCellColor);
         return bitmap;
     }
 
@@ -46,7 +55,7 @@ public class TileGridImageDrawer
         Image image = DrawTileGrid(grid);
 
         using Graphics g = Graphics.FromImage(image);
-        g.DrawRectangle(InvalidCellPen, cellX * _cellSize.Width, cellY * _cellSize.Height, _cellSize.Width, _cellSize.Height);
+        g.DrawRectangle(InvalidCellPen, cellX * CellSize.Width, cellY * CellSize.Height, CellSize.Width, CellSize.Height);
 
         return image;
     }

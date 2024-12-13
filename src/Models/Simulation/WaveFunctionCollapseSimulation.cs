@@ -7,8 +7,10 @@ namespace WaveFunctionCollapseImageGenerator.Models.Simulation;
 
 public class WaveFunctionCollapseSimulation(CellGrid grid, Ruleset ruleset, Random random) : IWFCSimulation
 {
-    protected CellGrid Grid { get; private init; } = grid;
-    protected Ruleset Ruleset { get; private init; } = ruleset;
+    public bool IsFinished => Grid.AreAllCellsCollapsed;
+
+    public CellGrid Grid { get; private init; } = grid;
+    public Ruleset Ruleset { get; private init; } = ruleset;
     protected Random Random { get; private init; } = random;
 
     // Possible improvements:

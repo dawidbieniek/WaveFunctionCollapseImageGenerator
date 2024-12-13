@@ -60,9 +60,11 @@
             binding_simulationViewModel = new BindingSource(components);
             btn_resetSimulation = new Button();
             btn_nextStep = new Button();
+            btn_pause = new Button();
+            btn_run = new Button();
             picture_imageDisplay = new PictureBox();
+            binding_imageViewModel = new BindingSource(components);
             text_console = new TextBox();
-            binding_viewModel = new BindingSource(components);
             layout_main = new TableLayoutPanel();
             layout_controls = new FlowLayoutPanel();
             group_grid = new GroupBox();
@@ -107,14 +109,14 @@
             layout_simulationButtons.SuspendLayout();
             layout_right.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picture_imageDisplay).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)binding_viewModel).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)binding_imageViewModel).BeginInit();
             SuspendLayout();
             // 
             // layout_main
             // 
             layout_main.ColumnCount = 2;
-            layout_main.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            layout_main.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            layout_main.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 34.2815475F));
+            layout_main.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 65.71845F));
             layout_main.Controls.Add(layout_controls, 0, 0);
             layout_main.Controls.Add(layout_right, 1, 0);
             layout_main.Dock = DockStyle.Fill;
@@ -137,7 +139,7 @@
             layout_controls.Location = new Point(0, 0);
             layout_controls.Margin = new Padding(0);
             layout_controls.Name = "layout_controls";
-            layout_controls.Size = new Size(685, 900);
+            layout_controls.Size = new Size(470, 900);
             layout_controls.TabIndex = 0;
             // 
             // group_grid
@@ -147,7 +149,7 @@
             group_grid.Margin = new Padding(3, 4, 3, 4);
             group_grid.Name = "group_grid";
             group_grid.Padding = new Padding(3, 4, 3, 4);
-            group_grid.Size = new Size(682, 413);
+            group_grid.Size = new Size(461, 413);
             group_grid.TabIndex = 2;
             group_grid.TabStop = false;
             group_grid.Text = "Grid";
@@ -173,7 +175,7 @@
             layout_gridParams.RowStyles.Add(new RowStyle(SizeType.Absolute, 27F));
             layout_gridParams.RowStyles.Add(new RowStyle(SizeType.Absolute, 27F));
             layout_gridParams.RowStyles.Add(new RowStyle(SizeType.Absolute, 27F));
-            layout_gridParams.Size = new Size(676, 385);
+            layout_gridParams.Size = new Size(455, 385);
             layout_gridParams.TabIndex = 0;
             // 
             // lbl_gridWrapping
@@ -181,7 +183,7 @@
             lbl_gridWrapping.AutoSize = true;
             lbl_gridWrapping.Location = new Point(3, 70);
             lbl_gridWrapping.Name = "lbl_gridWrapping";
-            lbl_gridWrapping.Size = new Size(159, 20);
+            lbl_gridWrapping.Size = new Size(96, 27);
             lbl_gridWrapping.TabIndex = 5;
             lbl_gridWrapping.Text = "Enable edge wrapping";
             // 
@@ -197,9 +199,9 @@
             // num_gridWidth
             // 
             num_gridWidth.BackColor = SystemColors.ControlLight;
-            num_gridWidth.DataBindings.Add(new Binding("Value", binding_gridViewModel, "Width", true));
+            num_gridWidth.DataBindings.Add(new Binding("Value", binding_gridViewModel, "Width", true, DataSourceUpdateMode.OnPropertyChanged));
             num_gridWidth.DataBindings.Add(new Binding("Enabled", binding_gridViewModel, "AllowEditing", true));
-            num_gridWidth.Location = new Point(247, 4);
+            num_gridWidth.Location = new Point(167, 4);
             num_gridWidth.Margin = new Padding(3, 4, 3, 4);
             num_gridWidth.Name = "num_gridWidth";
             num_gridWidth.Size = new Size(104, 27);
@@ -212,9 +214,9 @@
             // num_gridHeight
             // 
             num_gridHeight.BackColor = SystemColors.ControlLight;
-            num_gridHeight.DataBindings.Add(new Binding("Value", binding_gridViewModel, "Height", true));
+            num_gridHeight.DataBindings.Add(new Binding("Value", binding_gridViewModel, "Height", true, DataSourceUpdateMode.OnPropertyChanged));
             num_gridHeight.DataBindings.Add(new Binding("Enabled", binding_gridViewModel, "AllowEditing", true));
-            num_gridHeight.Location = new Point(247, 39);
+            num_gridHeight.Location = new Point(167, 39);
             num_gridHeight.Margin = new Padding(3, 4, 3, 4);
             num_gridHeight.Name = "num_gridHeight";
             num_gridHeight.Size = new Size(104, 27);
@@ -234,7 +236,7 @@
             check_gridWrapping.AutoSize = true;
             check_gridWrapping.DataBindings.Add(new Binding("Checked", binding_gridViewModel, "UseEdgeWrapping", true));
             check_gridWrapping.DataBindings.Add(new Binding("Enabled", binding_gridViewModel, "AllowEditing", true));
-            check_gridWrapping.Location = new Point(247, 74);
+            check_gridWrapping.Location = new Point(167, 74);
             check_gridWrapping.Margin = new Padding(3, 4, 3, 4);
             check_gridWrapping.Name = "check_gridWrapping";
             check_gridWrapping.Size = new Size(18, 17);
@@ -248,7 +250,7 @@
             group_tiles.Margin = new Padding(3, 4, 3, 4);
             group_tiles.Name = "group_tiles";
             group_tiles.Padding = new Padding(3, 4, 3, 4);
-            group_tiles.Size = new Size(682, 133);
+            group_tiles.Size = new Size(461, 133);
             group_tiles.TabIndex = 4;
             group_tiles.TabStop = false;
             group_tiles.Text = "Tiles";
@@ -270,14 +272,14 @@
             layout_tiles.RowStyles.Add(new RowStyle());
             layout_tiles.RowStyles.Add(new RowStyle(SizeType.Absolute, 27F));
             layout_tiles.RowStyles.Add(new RowStyle(SizeType.Absolute, 27F));
-            layout_tiles.Size = new Size(676, 105);
+            layout_tiles.Size = new Size(455, 105);
             layout_tiles.TabIndex = 1;
             // 
             // combo_tileset
             // 
             combo_tileset.BackColor = SystemColors.ControlLight;
             combo_tileset.FormattingEnabled = true;
-            combo_tileset.Location = new Point(247, 4);
+            combo_tileset.Location = new Point(167, 4);
             combo_tileset.Margin = new Padding(3, 4, 3, 4);
             combo_tileset.Name = "combo_tileset";
             combo_tileset.Size = new Size(138, 28);
@@ -294,7 +296,7 @@
             // 
             // btn_newTileset
             // 
-            btn_newTileset.Location = new Point(247, 40);
+            btn_newTileset.Location = new Point(167, 40);
             btn_newTileset.Margin = new Padding(3, 4, 3, 4);
             btn_newTileset.Name = "btn_newTileset";
             btn_newTileset.Size = new Size(86, 31);
@@ -309,7 +311,7 @@
             group_simulation.Margin = new Padding(3, 4, 3, 4);
             group_simulation.Name = "group_simulation";
             group_simulation.Padding = new Padding(3, 4, 3, 4);
-            group_simulation.Size = new Size(682, 221);
+            group_simulation.Size = new Size(461, 221);
             group_simulation.TabIndex = 3;
             group_simulation.TabStop = false;
             group_simulation.Text = "Simulation";
@@ -335,7 +337,7 @@
             layout_simulationParams.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
             layout_simulationParams.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
             layout_simulationParams.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-            layout_simulationParams.Size = new Size(676, 193);
+            layout_simulationParams.Size = new Size(455, 193);
             layout_simulationParams.TabIndex = 1;
             // 
             // layout_seed
@@ -343,10 +345,10 @@
             layout_seed.Controls.Add(num_seed);
             layout_seed.Controls.Add(check_randomSeed);
             layout_seed.Dock = DockStyle.Fill;
-            layout_seed.Location = new Point(244, 96);
+            layout_seed.Location = new Point(164, 96);
             layout_seed.Margin = new Padding(0);
             layout_seed.Name = "layout_seed";
-            layout_seed.Size = new Size(432, 48);
+            layout_seed.Size = new Size(291, 48);
             layout_seed.TabIndex = 9;
             // 
             // num_seed
@@ -390,7 +392,7 @@
             num_backtrackingDepth.BackColor = SystemColors.ControlLight;
             num_backtrackingDepth.DataBindings.Add(new Binding("Value", binding_simulationViewModel, "BacktrackingDepth", true));
             num_backtrackingDepth.DataBindings.Add(new Binding("Enabled", binding_simulationViewModel, "UseBacktracking", true));
-            num_backtrackingDepth.Location = new Point(247, 52);
+            num_backtrackingDepth.Location = new Point(167, 52);
             num_backtrackingDepth.Margin = new Padding(3, 4, 3, 4);
             num_backtrackingDepth.Name = "num_backtrackingDepth";
             num_backtrackingDepth.Size = new Size(104, 27);
@@ -418,7 +420,7 @@
             // 
             check_backtracking.AutoSize = true;
             check_backtracking.DataBindings.Add(new Binding("Checked", binding_simulationViewModel, "UseBacktracking", true, DataSourceUpdateMode.OnPropertyChanged));
-            check_backtracking.Location = new Point(247, 4);
+            check_backtracking.Location = new Point(167, 4);
             check_backtracking.Margin = new Padding(3, 4, 3, 4);
             check_backtracking.Name = "check_backtracking";
             check_backtracking.Size = new Size(18, 17);
@@ -430,19 +432,21 @@
             layout_simulationParams.SetColumnSpan(layout_simulationButtons, 2);
             layout_simulationButtons.Controls.Add(btn_resetSimulation);
             layout_simulationButtons.Controls.Add(btn_nextStep);
+            layout_simulationButtons.Controls.Add(btn_pause);
+            layout_simulationButtons.Controls.Add(btn_run);
             layout_simulationButtons.Dock = DockStyle.Fill;
             layout_simulationButtons.FlowDirection = FlowDirection.RightToLeft;
             layout_simulationButtons.Location = new Point(0, 144);
             layout_simulationButtons.Margin = new Padding(0);
             layout_simulationButtons.Name = "layout_simulationButtons";
-            layout_simulationButtons.Size = new Size(676, 49);
+            layout_simulationButtons.Size = new Size(455, 49);
             layout_simulationButtons.TabIndex = 8;
             // 
             // btn_resetSimulation
             // 
             btn_resetSimulation.DataBindings.Add(new Binding("Command", binding_simulationViewModel, "ResetSimulationCommand", true));
-            btn_resetSimulation.DataBindings.Add(new Binding("Enabled", binding_simulationViewModel, "SimulationStarted", true));
-            btn_resetSimulation.Location = new Point(587, 4);
+            btn_resetSimulation.DataBindings.Add(new Binding("Enabled", binding_simulationViewModel, "EnableResetButton", true));
+            btn_resetSimulation.Location = new Point(366, 4);
             btn_resetSimulation.Margin = new Padding(3, 4, 3, 4);
             btn_resetSimulation.Name = "btn_resetSimulation";
             btn_resetSimulation.Size = new Size(86, 31);
@@ -453,14 +457,38 @@
             // btn_nextStep
             // 
             btn_nextStep.DataBindings.Add(new Binding("Command", binding_simulationViewModel, "StepSimulationCommand", true));
-            btn_nextStep.DataBindings.Add(new Binding("Enabled", binding_simulationViewModel, "CanContinueSimulation", true));
-            btn_nextStep.Location = new Point(495, 4);
+            btn_nextStep.DataBindings.Add(new Binding("Enabled", binding_simulationViewModel, "EnableStepButton", true));
+            btn_nextStep.Location = new Point(274, 4);
             btn_nextStep.Margin = new Padding(3, 4, 3, 4);
             btn_nextStep.Name = "btn_nextStep";
             btn_nextStep.Size = new Size(86, 31);
             btn_nextStep.TabIndex = 0;
             btn_nextStep.Text = "Step";
             btn_nextStep.UseVisualStyleBackColor = true;
+            // 
+            // btn_pause
+            // 
+            btn_pause.DataBindings.Add(new Binding("Command", binding_simulationViewModel, "PauseSimulationCommand", true));
+            btn_pause.DataBindings.Add(new Binding("Enabled", binding_simulationViewModel, "EnablePauseButton", true));
+            btn_pause.Location = new Point(182, 4);
+            btn_pause.Margin = new Padding(3, 4, 3, 4);
+            btn_pause.Name = "btn_pause";
+            btn_pause.Size = new Size(86, 31);
+            btn_pause.TabIndex = 2;
+            btn_pause.Text = "Pause";
+            btn_pause.UseVisualStyleBackColor = true;
+            // 
+            // btn_run
+            // 
+            btn_run.DataBindings.Add(new Binding("Command", binding_simulationViewModel, "RunSimulationCommand", true));
+            btn_run.DataBindings.Add(new Binding("Enabled", binding_simulationViewModel, "EnableRunButton", true));
+            btn_run.Location = new Point(90, 4);
+            btn_run.Margin = new Padding(3, 4, 3, 4);
+            btn_run.Name = "btn_run";
+            btn_run.Size = new Size(86, 31);
+            btn_run.TabIndex = 3;
+            btn_run.Text = "Run";
+            btn_run.UseVisualStyleBackColor = true;
             // 
             // layout_right
             // 
@@ -469,39 +497,37 @@
             layout_right.Controls.Add(picture_imageDisplay, 0, 0);
             layout_right.Controls.Add(text_console, 0, 1);
             layout_right.Dock = DockStyle.Fill;
-            layout_right.Location = new Point(685, 0);
+            layout_right.Location = new Point(470, 0);
             layout_right.Margin = new Padding(0);
             layout_right.Name = "layout_right";
             layout_right.RowCount = 2;
-            layout_right.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            layout_right.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            layout_right.Size = new Size(686, 900);
+            layout_right.RowStyles.Add(new RowStyle(SizeType.Percent, 78.3333359F));
+            layout_right.RowStyles.Add(new RowStyle(SizeType.Percent, 21.666666F));
+            layout_right.Size = new Size(901, 900);
             layout_right.TabIndex = 6;
             // 
             // picture_imageDisplay
             // 
-            picture_imageDisplay.DataBindings.Add(new Binding("Image", binding_simulationViewModel, "DisplayImage", true));
-            picture_imageDisplay.DataBindings.Add(new Binding("Size", binding_simulationViewModel, "DisplayImageSize", true));
+            picture_imageDisplay.DataBindings.Add(new Binding("Image", binding_imageViewModel, "DisplayImage", true));
+            picture_imageDisplay.DataBindings.Add(new Binding("Size", binding_imageViewModel, "DisplayImageSize", true));
             picture_imageDisplay.Location = new Point(3, 4);
             picture_imageDisplay.Margin = new Padding(3, 4, 3, 4);
             picture_imageDisplay.Name = "picture_imageDisplay";
-            picture_imageDisplay.Size = new Size(461, 409);
+            picture_imageDisplay.Size = new Size(895, 697);
             picture_imageDisplay.TabIndex = 1;
             picture_imageDisplay.TabStop = false;
             // 
+            // binding_imageViewModel
+            // 
+            binding_imageViewModel.DataSource = typeof(ViewModels.MainForm.Components.ImageViewModel);
+            // 
             // text_console
             // 
-            text_console.DataBindings.Add(new Binding("Text", binding_viewModel, "LogConsoleText", true));
-            text_console.Location = new Point(3, 453);
+            text_console.Location = new Point(3, 708);
             text_console.Multiline = true;
             text_console.Name = "text_console";
-            text_console.Size = new Size(487, 184);
+            text_console.Size = new Size(895, 186);
             text_console.TabIndex = 2;
-            // 
-            // binding_viewModel
-            // 
-            binding_viewModel.AllowNew = false;
-            binding_viewModel.DataSource = typeof(ViewModels.MainForm.MainFormViewModel);
             // 
             // MainForm
             // 
@@ -538,7 +564,7 @@
             layout_right.ResumeLayout(false);
             layout_right.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)picture_imageDisplay).EndInit();
-            ((System.ComponentModel.ISupportInitialize)binding_viewModel).EndInit();
+            ((System.ComponentModel.ISupportInitialize)binding_imageViewModel).EndInit();
             ResumeLayout(false);
         }
 
@@ -549,7 +575,9 @@
         private BindingSource binding_gridViewModel;
         private BindingSource binding_simulationViewModel;
         private PictureBox picture_imageDisplay;
-        private BindingSource binding_viewModel;
         private TextBox text_console;
+        private Button btn_pause;
+        private Button btn_run;
+        private BindingSource binding_imageViewModel;
     }
 }

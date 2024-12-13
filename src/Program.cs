@@ -38,12 +38,14 @@ internal static class Program
 
     private static void ConfigureServices(IServiceCollection services)
     {
-        services.AddTransient<MainFormViewModel>()
-            .AddTransient<TilesetViewModel>()
-            .AddTransient<GridViewModel>()
-            .AddTransient<ITilesetProvider>(sp => sp.GetRequiredService<TilesetViewModel>())
-            .AddTransient<IGridProvider>(sp => sp.GetRequiredService<GridViewModel>())
-            .AddTransient<SimulationViewModel>();
+        services.AddSingleton<MainFormViewModel>()
+            .AddSingleton<TilesetViewModel>()
+            .AddSingleton<GridViewModel>()
+            .AddSingleton<ImageViewModel>()
+            .AddSingleton<ITilesetProvider>(sp => sp.GetRequiredService<TilesetViewModel>())
+            .AddSingleton<IGridProvider>(sp => sp.GetRequiredService<GridViewModel>())
+            .AddSingleton<IImageDisplayer>(sp => sp.GetRequiredService<ImageViewModel>())
+            .AddSingleton<SimulationViewModel>();
 
         services.AddSingleton<MainForm>();
     }

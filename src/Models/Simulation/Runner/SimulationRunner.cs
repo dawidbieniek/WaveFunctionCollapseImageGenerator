@@ -1,0 +1,126 @@
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+
+using WaveFunctionCollapseImageGenerator.Models.Exceptions;
+
+namespace WaveFunctionCollapseImageGenerator.Models.Simulation.Runner;
+
+public partial class SimulationRunner(IWFCSimulation simulation) : ObservableObject
+{
+    public readonly IWFCSimulation _simulation = simulation;
+
+    private readonly Lock _simulationStepLock = new();
+
+    private readonly CancellationTokenSource _loopCts = new();
+    private readonly SemaphoreSlim _loopPauseSemaphore = new(0, 1);
+
+    [ObservableProperty]
+    private bool _isSimulationStarted = false;
+    [ObservableProperty]
+    private bool _isSimulationRunning = false;
+    [ObservableProperty]
+    private bool _canContinueSimulation = false;
+
+    public event SimulationStepEventHandler OnSimulationStep = delegate { };
+    public event EventHandler OnBacktrackingStackEmptyError = delegate { };
+    public event InvalidCellCollapseEventHandler OnInvalidCellCollapseError = delegate { };
+    public event EventHandler OnSimulationFinished = delegate { };
+
+    public void StepSimulation()
+    {
+        if (!IsSimulationStarted)
+            StartSimulation();
+
+        if (!CanContinueSimulation)
+            return;
+
+        DoSimulationStep();
+    }
+
+    public void ContinueSimulation()
+    {
+        if (!IsSimulationStarted)
+        {
+            Task.Run(RunnerLoop, _loopCts.Token);
+            StartSimulation();
+        }
+
+        if (IsSimulationRunning || !CanContinueSimulation)
+            return;
+
+        _loopPauseSemaphore.Release();
+        IsSimulationRunning = true;
+    }
+
+    public async Task PauseSimulationAsync()
+    {
+        await _loopPauseSemaphore.WaitAsync();
+        IsSimulationRunning = false;
+    }
+
+    public void StopSimulation()
+    {
+        _loopCts.Cancel();
+
+        IsSimulationStarted = false;
+        IsSimulationRunning = false;
+        CanContinueSimulation = false;
+    }
+
+    private void StartSimulation()
+    {
+        IsSimulationStarted = true;
+        CanContinueSimulation = true;
+    }
+
+    private void DoSimulationStep()
+    {
+        try
+        {
+            using (_simulationStepLock.EnterScope())
+            {
+                _simulation.Step();
+                OnSimulationStep?.Invoke(this, new(_simulation.Grid));
+
+                if(_simulation.IsFinished)
+                {
+                    _loopCts.Cancel();
+                    IsSimulationRunning = false;
+                    CanContinueSimulation = false;
+                    OnSimulationFinished?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+        catch (InvalidCellCollapseException ex)
+        {
+            _loopCts.Cancel();
+            CanContinueSimulation = false;
+            OnInvalidCellCollapseError?.Invoke(this, new(ex, _simulation.Grid));
+        }
+        catch (BacktrackingStackEmptyException)
+        {
+            _loopCts.Cancel();
+            CanContinueSimulation = false;
+            OnBacktrackingStackEmptyError?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    private async Task RunnerLoop()
+    {
+        try
+        {
+            while (!_loopCts.IsCancellationRequested)
+            {
+                await _loopPauseSemaphore.WaitAsync();
+
+                DoSimulationStep();
+
+                // HACK: Temporary
+                //await Task.Delay(10, _loopCts.Token);
+
+                _loopPauseSemaphore.Release();
+            }
+        }
+        catch (OperationCanceledException)
+        { }
+    }
+}

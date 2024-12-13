@@ -29,6 +29,7 @@ public class CellGrid
 
     public int Width { get; private init; }
     public int Height { get; private init; }
+    public bool AreAllCellsCollapsed => !_cells.Cast<Cell>().Any(c => !c.Collapsed);
 
     public Cell this[int y, int x] => _cells[y, x];
 
