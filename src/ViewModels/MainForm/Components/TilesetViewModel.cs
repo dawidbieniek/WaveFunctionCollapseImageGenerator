@@ -1,78 +1,36 @@
-﻿using WaveFunctionCollapseImageGenerator.Models.Tiles;
+﻿using System.Collections.ObjectModel;
+
+using CommunityToolkit.Mvvm.ComponentModel;
+
+using WaveFunctionCollapseImageGenerator.Models.FileAccess;
+using WaveFunctionCollapseImageGenerator.Models.Tiles;
 
 namespace WaveFunctionCollapseImageGenerator.ViewModels.MainForm.Components;
 
-public class TilesetViewModel : ITilesetProvider
+public partial class TilesetViewModel : ObservableObject, ITilesetProvider
 {
-    public Tileset Tileset
+    [ObservableProperty]
+    private ObservableCollection<Tileset> _availableTilesets = [];
+
+    public async Task InitializeAsync()
     {
-        get
-        {
-            TilesetBuilder builder = new();
+        List<Tileset> tilesets = await TilesetFileHelper.LoadDefaultTilesetsAsync();
+        tilesets.AddRange(await TilesetFileHelper.LoadNonDefaultTilesetsAsync());
 
-            //Bitmap oneImage = new(20, 20);
-            //using (Graphics g = Graphics.FromImage(oneImage))
-            //{
-            //    g.Clear(Color.White);
-            //}
-            //Bitmap twoImage = new(20, 20);
-            //using (Graphics g = Graphics.FromImage(twoImage))
-            //{
-            //    g.Clear(Color.White);
-            //    g.FillRectangle(new SolidBrush(Color.Red), new(0, 0, 10, 10));
-            //}
-            //Bitmap threeImage = new(20, 20);
-            //using (Graphics g = Graphics.FromImage(threeImage))
-            //{
-            //    g.Clear(Color.White);
-            //    g.FillRectangle(new SolidBrush(Color.Blue), new(0, 0, 10, 10));
-            //}
-            //Bitmap fourImage = new(20, 20);
-            //using (Graphics g = Graphics.FromImage(fourImage))
-            //{
-            //    g.Clear(Color.White);
-            //    g.FillRectangle(new SolidBrush(Color.Red), new(0, 0, 10, 10));
-            //    g.FillRectangle(new SolidBrush(Color.Blue), new(10, 10, 10, 10));
-            //}
+        AvailableTilesets = [.. tilesets];
 
-            //builder
-            //    .WithTile(oneImage, new([0]), new([0]), new([0]), new([0]))
-            //    .WithTile(twoImage, new([1, 0]), new([0]), new([0]), new([0, 1]), Transform.RotateNoneFlipNone, Transform.Rotate180FlipNone, Transform.Rotate90FlipNone, Transform.Rotate270FlipNone)
-            //    .WithTile(threeImage, new([2, 0]), new([0]), new([0]), new([0, 2]), Transform.RotateNoneFlipNone, Transform.Rotate180FlipNone, Transform.Rotate90FlipNone, Transform.Rotate270FlipNone)
-            //    .WithTile(fourImage, new([1, 0]), new([0, 2]), new([2, 0]), new([0, 1]), Transform.RotateNoneFlipNone, Transform.Rotate180FlipNone, Transform.Rotate90FlipNone, Transform.Rotate270FlipNone)
-            //    .WithRuleset();
+        if (AvailableTilesets.Count == 0)
+            throw new InvalidOperationException("Cannot load any tilesets");
 
-            Bitmap oneImage = new(20, 20);
-            using (Graphics g = Graphics.FromImage(oneImage))
-            {
-                g.Clear(Color.White);
-            }
-            Bitmap middleImage = new(20, 20);
-            using (Graphics g = Graphics.FromImage(middleImage))
-            {
-                g.Clear(Color.Blue);
-            }
-            Bitmap cornerImage = new(20, 20);
-            using (Graphics g = Graphics.FromImage(cornerImage))
-            {
-                g.Clear(Color.White);
-                g.FillRectangle(new SolidBrush(Color.Blue), new(0, 0, 10, 10));
-            }
-            Bitmap lineImage = new(20, 20);
-            using (Graphics g = Graphics.FromImage(lineImage))
-            {
-                g.Clear(Color.White);
-                g.FillRectangle(new SolidBrush(Color.Blue), new(0, 0, 20, 10));
-            }
-
-            builder
-                .WithTile(oneImage, new([0]), new([0]), new([0]), new([0]))
-                .WithTile(middleImage, new([1, 1]), new([1, 1]), new([1, 1]), new([1, 1]))
-                .WithTile(cornerImage, new([1, 0]), new([0]), new([0]), new([0, 1]), Transform.RotateNoneFlipNone, Transform.Rotate180FlipNone, Transform.Rotate90FlipNone, Transform.Rotate270FlipNone)
-                .WithTile(lineImage, new([1, 1]), new([1, 0]), new([0]), new([0, 1]), Transform.RotateNoneFlipNone, Transform.Rotate180FlipNone, Transform.Rotate90FlipNone, Transform.Rotate270FlipNone)
-                .WithRuleset();
-
-            return builder.Build();
-        }
+        SelectedTileset = AvailableTilesets[0];
     }
+
+    [ObservableProperty]
+    private Tileset _selectedTileset = null!;
+
+    public event EventHandler<Tileset> SelectedTilesetChanged = delegate { };
+
+    public Tileset? Tileset => AvailableTilesets.Count >= 0 ? (SelectedTileset ??= AvailableTilesets[0]) : null;
+
+    partial void OnSelectedTilesetChanged(Tileset value) => SelectedTilesetChanged.Invoke(this, value);
 }

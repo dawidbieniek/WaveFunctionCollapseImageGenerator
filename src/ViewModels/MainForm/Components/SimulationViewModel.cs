@@ -59,6 +59,8 @@ public partial class SimulationViewModel : ObservableObject
     [RelayCommand]
     public void StepSimulation()
     {
+        if (_tilesetProvider.Tileset is null)
+            return;
         if (_simulationRunner is null)
             CreateSimulation();
 
@@ -83,6 +85,8 @@ public partial class SimulationViewModel : ObservableObject
     [RelayCommand]
     public void RunSimulation()
     {
+        if (_tilesetProvider.Tileset is null)
+            return;
         if (_simulationRunner is null)
             CreateSimulation();
 
@@ -107,7 +111,7 @@ public partial class SimulationViewModel : ObservableObject
     private void CreateSimulation()
     {
         Random random = RandomizeSeed ? new Random() : new Random(Seed);
-        _simulationRunner = new(_wfcSimulationFactory.CreateSimulation(_gridProvider.CreateGrid(random), _tilesetProvider.Tileset.Ruleset, random, UseBacktracking, BacktrackingDepth));
+        _simulationRunner = new(_wfcSimulationFactory.CreateSimulation(_gridProvider.CreateGrid(random)!, _tilesetProvider.Tileset!.Ruleset, random, UseBacktracking, BacktrackingDepth));
         // Relaying property changes
         _simulationRunner.PropertyChanged += (s, e) => Application.OpenForms[0]!.Invoke(() =>
         {

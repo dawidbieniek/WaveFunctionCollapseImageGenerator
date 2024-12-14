@@ -28,7 +28,12 @@ public partial class GridViewModel : ObservableObject, IGridProvider
         _imageDisplayer.ChangeImageSize(new(Width, Height));
     }
 
-    public CellGrid CreateGrid(Random random) => new(Width, Height, UseEdgeWrapping, [.. Enumerable.Range(0, _tilesetProvider.Tileset.TileCount)], random);
+    public CellGrid? CreateGrid(Random random)
+    {
+        return _tilesetProvider.Tileset is not null
+            ? new(Width, Height, UseEdgeWrapping, [.. Enumerable.Range(0, _tilesetProvider.Tileset.TileCount)], random)
+            : null;
+    }
 
     public void LockChanges() => AllowEditing = false;
 

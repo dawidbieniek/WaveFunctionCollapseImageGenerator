@@ -7,6 +7,7 @@ public class TileGridImageDrawer
 {
     private static readonly Color UncollapsedCellColor = Color.Gray;
     private static readonly Pen InvalidCellPen = new(Color.Red, 2);
+    private const int CellWithoutTilesetScalingFactor = 20;
 
     private readonly Bitmap _uncollapsedCellImage;
 
@@ -24,11 +25,20 @@ public class TileGridImageDrawer
 
     public Size CellSize { get; }
 
+    public static Image DrawEmptyImageWithoutTileset(Size gridSize)
+    {
+        Bitmap bitmap = new(CellWithoutTilesetScalingFactor * gridSize.Width, CellWithoutTilesetScalingFactor * gridSize.Height);
+        using Graphics g = Graphics.FromImage(bitmap);
+        g.Clear(UncollapsedCellColor);
+        return bitmap;
+    }
+
     public Image DrawTileGrid(CellGrid grid)
     {
         Bitmap bitmap = new(CellSize.Width * grid.Width, CellSize.Height * grid.Height);
 
         using Graphics g = Graphics.FromImage(bitmap);
+
         for (int i = 0; i < grid.Height; i++)
             for (int j = 0; j < grid.Width; j++)
             {
@@ -36,7 +46,7 @@ public class TileGridImageDrawer
                     ? _uncollapsedCellImage
                     : _tileSet.ImageFromTileIndex(grid[i, j].CurrentState!.Value);
 
-                g.DrawImage(cellImage, new Point(j * CellSize.Width, i * CellSize.Height));
+                g.DrawImage(cellImage, new Rectangle(j * CellSize.Width, i * CellSize.Height, CellSize.Width, CellSize.Height));
             }
 
         return bitmap;
@@ -49,7 +59,6 @@ public class TileGridImageDrawer
         g.Clear(UncollapsedCellColor);
         return bitmap;
     }
-
     public Image DrawTileGridWithInvalidCellIndicator(CellGrid grid, int cellX, int cellY)
     {
         Image image = DrawTileGrid(grid);

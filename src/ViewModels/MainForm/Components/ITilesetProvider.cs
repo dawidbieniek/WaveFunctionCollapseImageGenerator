@@ -4,5 +4,6 @@ namespace WaveFunctionCollapseImageGenerator.ViewModels.MainForm.Components;
 
 public interface ITilesetProvider
 {
-    Tileset Tileset { get; }
+    event EventHandler<Tileset> SelectedTilesetChanged;
+    Tileset? Tileset { get; }
 }

@@ -20,6 +20,8 @@ public partial class SimulationRunner(IWFCSimulation simulation) : ObservableObj
     [ObservableProperty]
     private bool _canContinueSimulation = false;
 
+    private Task? _loopTask;
+
     public event SimulationStepEventHandler OnSimulationStep = delegate { };
     public event EventHandler OnBacktrackingStackEmptyError = delegate { };
     public event InvalidCellCollapseEventHandler OnInvalidCellCollapseError = delegate { };
@@ -39,13 +41,13 @@ public partial class SimulationRunner(IWFCSimulation simulation) : ObservableObj
     public void ContinueSimulation()
     {
         if (!IsSimulationStarted)
-        {
-            Task.Run(RunnerLoop, _loopCts.Token);
             StartSimulation();
-        }
 
         if (IsSimulationRunning || !CanContinueSimulation)
             return;
+
+        if(_loopTask is null)
+            _loopTask = Task.Run(RunnerLoop, _loopCts.Token);
 
         _loopPauseSemaphore.Release();
         IsSimulationRunning = true;
@@ -60,6 +62,7 @@ public partial class SimulationRunner(IWFCSimulation simulation) : ObservableObj
     public void StopSimulation()
     {
         _loopCts.Cancel();
+        _loopTask = null;
 
         IsSimulationStarted = false;
         IsSimulationRunning = false;
@@ -113,9 +116,6 @@ public partial class SimulationRunner(IWFCSimulation simulation) : ObservableObj
                 await _loopPauseSemaphore.WaitAsync();
 
                 DoSimulationStep();
-
-                // HACK: Temporary
-                //await Task.Delay(10, _loopCts.Token);
 
                 _loopPauseSemaphore.Release();
             }

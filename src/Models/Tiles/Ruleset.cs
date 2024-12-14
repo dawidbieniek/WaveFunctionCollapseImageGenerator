@@ -5,6 +5,9 @@ namespace WaveFunctionCollapseImageGenerator.Models.Tiles;
 [Serializable]
 public record Ruleset(Dictionary<(int state, Direction dir), int[]> DisallowedNeighbours)
 {
+    /// <summary>
+    /// Generates <see cref="DisallowedNeighbours"/> rules from list of <see cref="Tile"/>s alone.
+    /// </summary>
     public static Ruleset FromTileList(IList<Tile> tiles)
     {
         Dictionary<(int state, Direction dir), int[]> rulesetMap = [];

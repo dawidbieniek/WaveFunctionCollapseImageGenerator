@@ -16,11 +16,17 @@ namespace WaveFunctionCollapseImageGenerator
             binding_gridViewModel.DataSource = ViewModel.GridViewModel;
             binding_simulationViewModel.DataSource = ViewModel.SimulationViewModel;
             binding_imageViewModel.DataSource = ViewModel.ImageViewModel;
+            binding_tilesetViewModel.DataSource = ViewModel.TilesetViewModel;
 
             logPublisher.Logged += (s, e) => Invoke(() => text_console.AppendText($"{e.Message}{Environment.NewLine}"));
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public MainFormViewModel ViewModel { get; set; }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            _ = ViewModel.InitializeAsync();
+        }
     }
 }

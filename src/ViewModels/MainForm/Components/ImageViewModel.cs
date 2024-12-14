@@ -7,30 +7,49 @@ namespace WaveFunctionCollapseImageGenerator.ViewModels.MainForm.Components;
 
 public partial class ImageViewModel : ObservableObject, IImageDisplayer
 {
-    private readonly ITilesetProvider _tilesetProvider;
-    private readonly TileGridImageDrawer _displayImageDrawer;
+    private TileGridImageDrawer? _displayImageDrawer;
 
     [ObservableProperty]
     private Image _displayImage = new Bitmap(100, 100);
     [ObservableProperty]
     private Size _displayImageSize = new(100, 100);
 
+    private Size _imageGridSize = new(10, 10);
+
     public ImageViewModel(ITilesetProvider tilesetProvider)
     {
-        _tilesetProvider = tilesetProvider;
-
-        _displayImageDrawer = new(_tilesetProvider.Tileset);
+        tilesetProvider.SelectedTilesetChanged += (s, tileset) =>
+        {
+            _displayImageDrawer = new(tileset);
+            // Redrawing empty grid, but now with proper tile sizes
+            Image emptyImage = _displayImageDrawer.DrawEmptyImage(_imageGridSize);
+            DisplayImage = emptyImage;
+            DisplayImageSize = DisplayImage.Size;
+        };
     }
 
-    public void DisplayGrid(CellGrid grid) => DisplayImage = _displayImageDrawer.DrawTileGrid(grid);
+    public void DisplayGrid(CellGrid grid)
+    {
+        if (_displayImageDrawer is null)
+            return;
 
-    public void DisplayGridWithErrorCell(CellGrid grid, int cellX, int cellY) => DisplayImage = _displayImageDrawer.DrawTileGridWithInvalidCellIndicator(grid, cellX, cellY);
+        DisplayImage = _displayImageDrawer.DrawTileGrid(grid);
+    }
+
+    public void DisplayGridWithErrorCell(CellGrid grid, int cellX, int cellY)
+    {
+        if (_displayImageDrawer is null)
+            return;
+
+        DisplayImage = _displayImageDrawer.DrawTileGridWithInvalidCellIndicator(grid, cellX, cellY);
+    }
 
     public void ChangeImageSize(Size newSize)
     {
-        Image emptyImage = _displayImageDrawer.DrawEmptyImage(newSize);
+        _imageGridSize = newSize;
+        Image emptyImage = _displayImageDrawer?.DrawEmptyImage(newSize) ?? TileGridImageDrawer.DrawEmptyImageWithoutTileset(newSize);
 
-        DisplayImageSize = DisplayImage.Size;
         DisplayImage = emptyImage;
+        DisplayImageSize = DisplayImage.Size;
     }
 }

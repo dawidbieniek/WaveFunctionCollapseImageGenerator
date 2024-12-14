@@ -56,6 +56,8 @@
             FlowLayoutPanel layout_simulationButtons;
             TableLayoutPanel layout_right;
             binding_gridViewModel = new BindingSource(components);
+            binding_tilesetViewModel = new BindingSource(components);
+            data_availableTilesets = new BindingSource(components);
             btn_newTileset = new Button();
             binding_simulationViewModel = new BindingSource(components);
             btn_resetSimulation = new Button();
@@ -100,6 +102,8 @@
             ((System.ComponentModel.ISupportInitialize)num_gridHeight).BeginInit();
             group_tiles.SuspendLayout();
             layout_tiles.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)binding_tilesetViewModel).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)data_availableTilesets).BeginInit();
             group_simulation.SuspendLayout();
             layout_simulationParams.SuspendLayout();
             layout_seed.SuspendLayout();
@@ -278,12 +282,25 @@
             // combo_tileset
             // 
             combo_tileset.BackColor = SystemColors.ControlLight;
+            combo_tileset.DataBindings.Add(new Binding("SelectedItem", binding_tilesetViewModel, "SelectedTileset", true));
+            combo_tileset.DataSource = data_availableTilesets;
+            combo_tileset.DisplayMember = "Name";
             combo_tileset.FormattingEnabled = true;
             combo_tileset.Location = new Point(167, 4);
             combo_tileset.Margin = new Padding(3, 4, 3, 4);
             combo_tileset.Name = "combo_tileset";
             combo_tileset.Size = new Size(138, 28);
             combo_tileset.TabIndex = 0;
+            // 
+            // binding_tilesetViewModel
+            // 
+            binding_tilesetViewModel.AllowNew = false;
+            binding_tilesetViewModel.DataSource = typeof(ViewModels.MainForm.Components.TilesetViewModel);
+            // 
+            // data_availableTilesets
+            // 
+            data_availableTilesets.DataMember = "AvailableTilesets";
+            data_availableTilesets.DataSource = binding_tilesetViewModel;
             // 
             // lbl_tileset
             // 
@@ -541,6 +558,7 @@
             MaximizeBox = false;
             Name = "MainForm";
             Text = "Wave Function Collapse Image Generator";
+            Load += MainForm_Load;
             layout_main.ResumeLayout(false);
             layout_controls.ResumeLayout(false);
             group_grid.ResumeLayout(false);
@@ -552,6 +570,8 @@
             group_tiles.ResumeLayout(false);
             layout_tiles.ResumeLayout(false);
             layout_tiles.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)binding_tilesetViewModel).EndInit();
+            ((System.ComponentModel.ISupportInitialize)data_availableTilesets).EndInit();
             group_simulation.ResumeLayout(false);
             layout_simulationParams.ResumeLayout(false);
             layout_simulationParams.PerformLayout();
@@ -579,5 +599,7 @@
         private Button btn_pause;
         private Button btn_run;
         private BindingSource binding_imageViewModel;
+        private BindingSource binding_tilesetViewModel;
+        private BindingSource data_availableTilesets;
     }
 }

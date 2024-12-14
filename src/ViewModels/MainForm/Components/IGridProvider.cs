@@ -4,7 +4,7 @@ namespace WaveFunctionCollapseImageGenerator.ViewModels.MainForm.Components;
 
 public interface IGridProvider
 {
-    CellGrid CreateGrid(Random random);
+    CellGrid? CreateGrid(Random random);
 
     void LockChanges();
 

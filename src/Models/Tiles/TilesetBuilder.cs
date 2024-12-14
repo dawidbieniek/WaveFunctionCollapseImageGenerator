@@ -2,8 +2,11 @@
 
 public class TilesetBuilder
 {
-    private List<Bitmap> _images = [];
-    private List<Tile> _tiles = [];
+    private const string DefaultTilesetName = "New tileset";
+
+    private readonly List<Bitmap> _images = [];
+    private readonly List<Tile> _tiles = [];
+    private string _tilesetName = DefaultTilesetName;
     private bool _buildRuleset = false;
 
     public TilesetBuilder WithTile(Bitmap image, TileEdge upEdge, TileEdge rightEdge, TileEdge downEdge, TileEdge leftEdge, params IEnumerable<Transform> availableTransforms)
@@ -36,6 +39,12 @@ public class TilesetBuilder
         return this;
     }
 
+    public TilesetBuilder WithName(string name)
+    {
+        _tilesetName = name;
+        return this;
+    }
+
     public Tileset Build()
     {
         Ruleset ruleset = new([]);
@@ -43,6 +52,6 @@ public class TilesetBuilder
         if (_buildRuleset)
             ruleset = Ruleset.FromTileList(_tiles);
 
-        return new([.. _images], [.. _tiles], ruleset);
+        return new([.. _images], [.. _tiles], ruleset, _tilesetName);
     }
 }

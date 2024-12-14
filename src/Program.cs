@@ -3,6 +3,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 using WaveFunctionCollapseImageGenerator.Common.Loggers;
+using WaveFunctionCollapseImageGenerator.Models.FileAccess;
 using WaveFunctionCollapseImageGenerator.ViewModels.MainForm;
 using WaveFunctionCollapseImageGenerator.ViewModels.MainForm.Components;
 
@@ -18,6 +19,8 @@ internal static class Program
     [STAThread]
     private static void Main()
     {
+        //_ = DebugTilesetCreator.CreateDefaultTilesets();
+
         ApplicationConfiguration.Initialize();
 
         IHostBuilder builder = Host.CreateDefaultBuilder();
