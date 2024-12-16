@@ -13,9 +13,6 @@ public class WaveFunctionCollapseSimulationWithBacktracking(CellGrid grid, Rules
 
     private readonly DropoutStack<SimulationSnapshot> _snapshotStack = new(snapshotStackSize);
 
-    //TODO:- catch exceptions in vm
-    //- backtracking size locking in ui
-
     public override void Step()
     {
         // Find cell to collapse

@@ -78,6 +78,7 @@ public partial class SimulationViewModel : ObservableObject
 
         UpdateButtonEnablement();
         _gridProvider.UnlockChanges();
+        _imageDisplayer.ClearImage();
 
         _logger.LogInformation("Simulation reset");
     }

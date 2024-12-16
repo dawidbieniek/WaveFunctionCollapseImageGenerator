@@ -22,9 +22,7 @@ public partial class ImageViewModel : ObservableObject, IImageDisplayer
         {
             _displayImageDrawer = new(tileset);
             // Redrawing empty grid, but now with proper tile sizes
-            Image emptyImage = _displayImageDrawer.DrawEmptyImage(_imageGridSize);
-            DisplayImage = emptyImage;
-            DisplayImageSize = DisplayImage.Size;
+            DrawEmptyImage();
         };
     }
 
@@ -35,6 +33,8 @@ public partial class ImageViewModel : ObservableObject, IImageDisplayer
 
         DisplayImage = _displayImageDrawer.DrawTileGrid(grid);
     }
+
+    public void ClearImage() => DrawEmptyImage();
 
     public void DisplayGridWithErrorCell(CellGrid grid, int cellX, int cellY)
     {
@@ -49,6 +49,16 @@ public partial class ImageViewModel : ObservableObject, IImageDisplayer
         _imageGridSize = newSize;
         Image emptyImage = _displayImageDrawer?.DrawEmptyImage(newSize) ?? TileGridImageDrawer.DrawEmptyImageWithoutTileset(newSize);
 
+        DisplayImage = emptyImage;
+        DisplayImageSize = DisplayImage.Size;
+    }
+
+    private void DrawEmptyImage()
+    {
+        if (_displayImageDrawer is null)
+            return;
+
+        Image emptyImage = _displayImageDrawer.DrawEmptyImage(_imageGridSize);
         DisplayImage = emptyImage;
         DisplayImageSize = DisplayImage.Size;
     }

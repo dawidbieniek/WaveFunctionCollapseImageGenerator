@@ -13,8 +13,6 @@ public class WaveFunctionCollapseSimulation(CellGrid grid, Ruleset ruleset, Rand
     public Ruleset Ruleset { get; private init; } = ruleset;
     protected Random Random { get; private init; } = random;
 
-    // Possible improvements:
-    // TODO: Separate collection for lowest entropy cells - store instead of iterate
     public virtual void Step()
     {
         IList<CellWithCoordinates> potentialCells = Grid.GetLowestEntropyCollapsableCellsWithCoordinates();

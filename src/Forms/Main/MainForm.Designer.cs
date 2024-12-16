@@ -525,12 +525,13 @@
             // 
             // picture_imageDisplay
             // 
+            picture_imageDisplay.Anchor = AnchorStyles.None;
             picture_imageDisplay.DataBindings.Add(new Binding("Image", binding_imageViewModel, "DisplayImage", true));
             picture_imageDisplay.DataBindings.Add(new Binding("Size", binding_imageViewModel, "DisplayImageSize", true));
-            picture_imageDisplay.Location = new Point(3, 4);
+            picture_imageDisplay.Location = new Point(400, 302);
             picture_imageDisplay.Margin = new Padding(3, 4, 3, 4);
             picture_imageDisplay.Name = "picture_imageDisplay";
-            picture_imageDisplay.Size = new Size(895, 697);
+            picture_imageDisplay.Size = new Size(100, 100);
             picture_imageDisplay.TabIndex = 1;
             picture_imageDisplay.TabStop = false;
             // 
