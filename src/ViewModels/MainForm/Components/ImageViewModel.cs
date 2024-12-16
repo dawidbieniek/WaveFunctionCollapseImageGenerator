@@ -1,4 +1,9 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Drawing.Imaging;
+
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+
+using Microsoft.Extensions.Logging;
 
 using WaveFunctionCollapseImageGenerator.Models.Cells;
 using WaveFunctionCollapseImageGenerator.ViewModels.MainForm.Components.Helper;
@@ -7,6 +12,7 @@ namespace WaveFunctionCollapseImageGenerator.ViewModels.MainForm.Components;
 
 public partial class ImageViewModel : ObservableObject, IImageDisplayer
 {
+    private readonly ILogger<ImageViewModel> _logger;
     private TileGridImageDrawer? _displayImageDrawer;
 
     [ObservableProperty]
@@ -16,14 +22,37 @@ public partial class ImageViewModel : ObservableObject, IImageDisplayer
 
     private Size _imageGridSize = new(10, 10);
 
-    public ImageViewModel(ITilesetProvider tilesetProvider)
+    public ImageViewModel(ITilesetProvider tilesetProvider, ILogger<ImageViewModel> logger)
     {
+        _logger = logger;
+
         tilesetProvider.SelectedTilesetChanged += (s, tileset) =>
         {
             _displayImageDrawer = new(tileset);
             // Redrawing empty grid, but now with proper tile sizes
             DrawEmptyImage();
         };
+    }
+
+    [RelayCommand]
+    public void SaveImage()
+    {
+        SaveFileDialog dialog = new()
+        {
+            AddExtension = true,
+            AddToRecent = true,
+            Filter = "Png Image|*.png|Bitmap Image|*.bmp|JPeg Image|*.jpg|Gif Image|*.gif",
+            Title = "Save an image",
+        };
+
+        dialog.ShowDialog();
+
+        if (string.IsNullOrEmpty(dialog.FileName))
+            return;
+
+        using FileStream stream = (FileStream)dialog.OpenFile();
+        DisplayImage.Save(stream, ImageFormatFromFilterIndex(dialog.FilterIndex));
+        _logger.LogInformation("Successfully saved image as {filename}", dialog.FileName);
     }
 
     public void DisplayGrid(CellGrid grid)
@@ -62,4 +91,13 @@ public partial class ImageViewModel : ObservableObject, IImageDisplayer
         DisplayImage = emptyImage;
         DisplayImageSize = DisplayImage.Size;
     }
+
+    private static ImageFormat ImageFormatFromFilterIndex(int index) => index switch
+    {
+        1 => ImageFormat.Png,
+        2 => ImageFormat.Bmp,
+        3 => ImageFormat.Jpeg,
+        4 => ImageFormat.Gif,
+        _ => throw new InvalidOperationException("Invalid filter index")
+    };
 }

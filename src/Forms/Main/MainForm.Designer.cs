@@ -55,6 +55,7 @@
             CheckBox check_backtracking;
             FlowLayoutPanel layout_simulationButtons;
             TableLayoutPanel layout_right;
+            FlowLayoutPanel layout_rightConsoleButtons;
             binding_gridViewModel = new BindingSource(components);
             binding_tilesetViewModel = new BindingSource(components);
             data_availableTilesets = new BindingSource(components);
@@ -64,10 +65,12 @@
             btn_nextStep = new Button();
             btn_pause = new Button();
             btn_run = new Button();
+            btn_saveImage = new Button();
+            binding_imageViewModel = new BindingSource(components);
+            btn_clearConsole = new Button();
             text_console = new TextBox();
             layout_pictureBoxContainer = new TableLayoutPanel();
             picture_imageDisplay = new PictureBox();
-            binding_imageViewModel = new BindingSource(components);
             layout_main = new TableLayoutPanel();
             layout_controls = new FlowLayoutPanel();
             group_grid = new GroupBox();
@@ -94,6 +97,7 @@
             check_backtracking = new CheckBox();
             layout_simulationButtons = new FlowLayoutPanel();
             layout_right = new TableLayoutPanel();
+            layout_rightConsoleButtons = new FlowLayoutPanel();
             layout_main.SuspendLayout();
             layout_controls.SuspendLayout();
             group_grid.SuspendLayout();
@@ -113,9 +117,10 @@
             ((System.ComponentModel.ISupportInitialize)num_backtrackingDepth).BeginInit();
             layout_simulationButtons.SuspendLayout();
             layout_right.SuspendLayout();
+            layout_rightConsoleButtons.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)binding_imageViewModel).BeginInit();
             layout_pictureBoxContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picture_imageDisplay).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)binding_imageViewModel).BeginInit();
             SuspendLayout();
             // 
             // layout_main
@@ -512,25 +517,66 @@
             // layout_right
             // 
             layout_right.ColumnCount = 1;
-            layout_right.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            layout_right.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            layout_right.Controls.Add(layout_rightConsoleButtons, 0, 2);
             layout_right.Controls.Add(text_console, 0, 1);
             layout_right.Controls.Add(layout_pictureBoxContainer, 0, 0);
             layout_right.Dock = DockStyle.Fill;
             layout_right.Location = new Point(470, 0);
             layout_right.Margin = new Padding(0);
             layout_right.Name = "layout_right";
-            layout_right.RowCount = 2;
+            layout_right.RowCount = 3;
             layout_right.RowStyles.Add(new RowStyle(SizeType.Percent, 78.3333359F));
-            layout_right.RowStyles.Add(new RowStyle(SizeType.Percent, 21.666666F));
+            layout_right.RowStyles.Add(new RowStyle(SizeType.Percent, 21.6666641F));
+            layout_right.RowStyles.Add(new RowStyle());
             layout_right.Size = new Size(901, 900);
             layout_right.TabIndex = 6;
             // 
+            // layout_rightConsoleButtons
+            // 
+            layout_rightConsoleButtons.Controls.Add(btn_saveImage);
+            layout_rightConsoleButtons.Controls.Add(btn_clearConsole);
+            layout_rightConsoleButtons.Dock = DockStyle.Fill;
+            layout_rightConsoleButtons.FlowDirection = FlowDirection.RightToLeft;
+            layout_rightConsoleButtons.Location = new Point(0, 857);
+            layout_rightConsoleButtons.Margin = new Padding(0);
+            layout_rightConsoleButtons.Name = "layout_rightConsoleButtons";
+            layout_rightConsoleButtons.Size = new Size(901, 43);
+            layout_rightConsoleButtons.TabIndex = 11;
+            // 
+            // btn_saveImage
+            // 
+            btn_saveImage.DataBindings.Add(new Binding("Command", binding_imageViewModel, "SaveImageCommand", true));
+            btn_saveImage.DataBindings.Add(new Binding("Enabled", binding_simulationViewModel, "EnableResetButton", true));
+            btn_saveImage.Location = new Point(769, 4);
+            btn_saveImage.Margin = new Padding(3, 4, 3, 4);
+            btn_saveImage.Name = "btn_saveImage";
+            btn_saveImage.Size = new Size(129, 31);
+            btn_saveImage.TabIndex = 1;
+            btn_saveImage.Text = "Save image";
+            btn_saveImage.UseVisualStyleBackColor = true;
+            // 
+            // binding_imageViewModel
+            // 
+            binding_imageViewModel.DataSource = typeof(ViewModels.MainForm.Components.ImageViewModel);
+            // 
+            // btn_clearConsole
+            // 
+            btn_clearConsole.Location = new Point(634, 4);
+            btn_clearConsole.Margin = new Padding(3, 4, 3, 4);
+            btn_clearConsole.Name = "btn_clearConsole";
+            btn_clearConsole.Size = new Size(129, 31);
+            btn_clearConsole.TabIndex = 0;
+            btn_clearConsole.Text = "Clear console";
+            btn_clearConsole.UseVisualStyleBackColor = true;
+            btn_clearConsole.Click += Btn_clearConsole_Click;
+            // 
             // text_console
             // 
-            text_console.Location = new Point(3, 708);
+            text_console.Location = new Point(3, 675);
             text_console.Multiline = true;
             text_console.Name = "text_console";
-            text_console.Size = new Size(895, 186);
+            text_console.Size = new Size(895, 178);
             text_console.TabIndex = 2;
             // 
             // layout_pictureBoxContainer
@@ -544,23 +590,19 @@
             layout_pictureBoxContainer.Name = "layout_pictureBoxContainer";
             layout_pictureBoxContainer.RowCount = 1;
             layout_pictureBoxContainer.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            layout_pictureBoxContainer.Size = new Size(901, 705);
+            layout_pictureBoxContainer.Size = new Size(901, 672);
             layout_pictureBoxContainer.TabIndex = 3;
             // 
             // picture_imageDisplay
             // 
             picture_imageDisplay.Anchor = AnchorStyles.None;
             picture_imageDisplay.DataBindings.Add(new Binding("Image", binding_imageViewModel, "DisplayImage", true));
-            picture_imageDisplay.Location = new Point(400, 302);
+            picture_imageDisplay.Location = new Point(400, 286);
             picture_imageDisplay.Margin = new Padding(3, 4, 3, 4);
             picture_imageDisplay.Name = "picture_imageDisplay";
             picture_imageDisplay.Size = new Size(100, 100);
             picture_imageDisplay.TabIndex = 1;
             picture_imageDisplay.TabStop = false;
-            // 
-            // binding_imageViewModel
-            // 
-            binding_imageViewModel.DataSource = typeof(ViewModels.MainForm.Components.ImageViewModel);
             // 
             // MainForm
             // 
@@ -599,9 +641,10 @@
             layout_simulationButtons.ResumeLayout(false);
             layout_right.ResumeLayout(false);
             layout_right.PerformLayout();
+            layout_rightConsoleButtons.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)binding_imageViewModel).EndInit();
             layout_pictureBoxContainer.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)picture_imageDisplay).EndInit();
-            ((System.ComponentModel.ISupportInitialize)binding_imageViewModel).EndInit();
             ResumeLayout(false);
         }
 
@@ -619,5 +662,7 @@
         private BindingSource binding_tilesetViewModel;
         private BindingSource data_availableTilesets;
         private TableLayoutPanel layout_pictureBoxContainer;
+        private Button btn_saveImage;
+        private Button btn_clearConsole;
     }
 }

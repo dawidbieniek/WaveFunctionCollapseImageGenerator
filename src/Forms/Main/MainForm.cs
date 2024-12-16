@@ -48,5 +48,12 @@ namespace WaveFunctionCollapseImageGenerator
                 picture_imageDisplay.SizeMode = PictureBoxSizeMode.Normal;
             }
         }
+
+        private void Btn_clearConsole_Click(object sender, EventArgs e) => text_console.Clear();
+
+        private void Btn_saveImage_Click(object sender, EventArgs e)
+        {
+            
+        }
     }
 }
