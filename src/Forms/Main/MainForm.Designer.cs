@@ -64,9 +64,10 @@
             btn_nextStep = new Button();
             btn_pause = new Button();
             btn_run = new Button();
+            text_console = new TextBox();
+            layout_pictureBoxContainer = new TableLayoutPanel();
             picture_imageDisplay = new PictureBox();
             binding_imageViewModel = new BindingSource(components);
-            text_console = new TextBox();
             layout_main = new TableLayoutPanel();
             layout_controls = new FlowLayoutPanel();
             group_grid = new GroupBox();
@@ -112,6 +113,7 @@
             ((System.ComponentModel.ISupportInitialize)num_backtrackingDepth).BeginInit();
             layout_simulationButtons.SuspendLayout();
             layout_right.SuspendLayout();
+            layout_pictureBoxContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picture_imageDisplay).BeginInit();
             ((System.ComponentModel.ISupportInitialize)binding_imageViewModel).BeginInit();
             SuspendLayout();
@@ -511,8 +513,8 @@
             // 
             layout_right.ColumnCount = 1;
             layout_right.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            layout_right.Controls.Add(picture_imageDisplay, 0, 0);
             layout_right.Controls.Add(text_console, 0, 1);
+            layout_right.Controls.Add(layout_pictureBoxContainer, 0, 0);
             layout_right.Dock = DockStyle.Fill;
             layout_right.Location = new Point(470, 0);
             layout_right.Margin = new Padding(0);
@@ -523,11 +525,32 @@
             layout_right.Size = new Size(901, 900);
             layout_right.TabIndex = 6;
             // 
+            // text_console
+            // 
+            text_console.Location = new Point(3, 708);
+            text_console.Multiline = true;
+            text_console.Name = "text_console";
+            text_console.Size = new Size(895, 186);
+            text_console.TabIndex = 2;
+            // 
+            // layout_pictureBoxContainer
+            // 
+            layout_pictureBoxContainer.ColumnCount = 1;
+            layout_pictureBoxContainer.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            layout_pictureBoxContainer.Controls.Add(picture_imageDisplay, 0, 0);
+            layout_pictureBoxContainer.Dock = DockStyle.Fill;
+            layout_pictureBoxContainer.Location = new Point(0, 0);
+            layout_pictureBoxContainer.Margin = new Padding(0);
+            layout_pictureBoxContainer.Name = "layout_pictureBoxContainer";
+            layout_pictureBoxContainer.RowCount = 1;
+            layout_pictureBoxContainer.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            layout_pictureBoxContainer.Size = new Size(901, 705);
+            layout_pictureBoxContainer.TabIndex = 3;
+            // 
             // picture_imageDisplay
             // 
             picture_imageDisplay.Anchor = AnchorStyles.None;
             picture_imageDisplay.DataBindings.Add(new Binding("Image", binding_imageViewModel, "DisplayImage", true));
-            picture_imageDisplay.DataBindings.Add(new Binding("Size", binding_imageViewModel, "DisplayImageSize", true));
             picture_imageDisplay.Location = new Point(400, 302);
             picture_imageDisplay.Margin = new Padding(3, 4, 3, 4);
             picture_imageDisplay.Name = "picture_imageDisplay";
@@ -538,14 +561,6 @@
             // binding_imageViewModel
             // 
             binding_imageViewModel.DataSource = typeof(ViewModels.MainForm.Components.ImageViewModel);
-            // 
-            // text_console
-            // 
-            text_console.Location = new Point(3, 708);
-            text_console.Multiline = true;
-            text_console.Name = "text_console";
-            text_console.Size = new Size(895, 186);
-            text_console.TabIndex = 2;
             // 
             // MainForm
             // 
@@ -584,6 +599,7 @@
             layout_simulationButtons.ResumeLayout(false);
             layout_right.ResumeLayout(false);
             layout_right.PerformLayout();
+            layout_pictureBoxContainer.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)picture_imageDisplay).EndInit();
             ((System.ComponentModel.ISupportInitialize)binding_imageViewModel).EndInit();
             ResumeLayout(false);
@@ -602,5 +618,6 @@
         private BindingSource binding_imageViewModel;
         private BindingSource binding_tilesetViewModel;
         private BindingSource data_availableTilesets;
+        private TableLayoutPanel layout_pictureBoxContainer;
     }
 }
