@@ -382,6 +382,7 @@
             num_seed.DataBindings.Add(new Binding("Enabled", binding_simulationViewModel, "UseSeed", true));
             num_seed.Location = new Point(3, 4);
             num_seed.Margin = new Padding(3, 4, 3, 4);
+            num_seed.Maximum = new decimal(new int[] { int.MaxValue, 0, 0, 0 });
             num_seed.Name = "num_seed";
             num_seed.Size = new Size(104, 27);
             num_seed.TabIndex = 12;
@@ -538,10 +539,10 @@
             layout_rightConsoleButtons.Controls.Add(btn_clearConsole);
             layout_rightConsoleButtons.Dock = DockStyle.Fill;
             layout_rightConsoleButtons.FlowDirection = FlowDirection.RightToLeft;
-            layout_rightConsoleButtons.Location = new Point(0, 857);
+            layout_rightConsoleButtons.Location = new Point(0, 856);
             layout_rightConsoleButtons.Margin = new Padding(0);
             layout_rightConsoleButtons.Name = "layout_rightConsoleButtons";
-            layout_rightConsoleButtons.Size = new Size(901, 43);
+            layout_rightConsoleButtons.Size = new Size(901, 44);
             layout_rightConsoleButtons.TabIndex = 11;
             // 
             // btn_saveImage
@@ -573,7 +574,7 @@
             // 
             // text_console
             // 
-            text_console.Location = new Point(3, 675);
+            text_console.Location = new Point(3, 674);
             text_console.Multiline = true;
             text_console.Name = "text_console";
             text_console.Size = new Size(895, 178);
@@ -590,14 +591,14 @@
             layout_pictureBoxContainer.Name = "layout_pictureBoxContainer";
             layout_pictureBoxContainer.RowCount = 1;
             layout_pictureBoxContainer.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            layout_pictureBoxContainer.Size = new Size(901, 672);
+            layout_pictureBoxContainer.Size = new Size(901, 671);
             layout_pictureBoxContainer.TabIndex = 3;
             // 
             // picture_imageDisplay
             // 
             picture_imageDisplay.Anchor = AnchorStyles.None;
             picture_imageDisplay.DataBindings.Add(new Binding("Image", binding_imageViewModel, "DisplayImage", true));
-            picture_imageDisplay.Location = new Point(400, 286);
+            picture_imageDisplay.Location = new Point(400, 285);
             picture_imageDisplay.Margin = new Padding(3, 4, 3, 4);
             picture_imageDisplay.Name = "picture_imageDisplay";
             picture_imageDisplay.Size = new Size(100, 100);

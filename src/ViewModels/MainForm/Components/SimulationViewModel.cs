@@ -111,7 +111,11 @@ public partial class SimulationViewModel : ObservableObject
 
     private void CreateSimulation()
     {
-        Random random = RandomizeSeed ? new Random() : new Random(Seed);
+        if (RandomizeSeed)
+            Seed = (new Random()).Next();
+
+        Random random = new(Seed);
+
         _simulationRunner = new(_wfcSimulationFactory.CreateSimulation(_gridProvider.CreateGrid(random)!, _tilesetProvider.Tileset!.Ruleset, random, UseBacktracking, BacktrackingDepth));
         // Relaying property changes
         _simulationRunner.PropertyChanged += (s, e) => Application.OpenForms[0]!.Invoke(() =>
