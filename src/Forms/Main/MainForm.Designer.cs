@@ -56,6 +56,8 @@
             FlowLayoutPanel layout_simulationButtons;
             TableLayoutPanel layout_right;
             FlowLayoutPanel layout_rightConsoleButtons;
+            Label lbl_skipDrawingGrid;
+            CheckBox check_skipDrawingGrid;
             binding_gridViewModel = new BindingSource(components);
             binding_tilesetViewModel = new BindingSource(components);
             data_availableTilesets = new BindingSource(components);
@@ -98,6 +100,8 @@
             layout_simulationButtons = new FlowLayoutPanel();
             layout_right = new TableLayoutPanel();
             layout_rightConsoleButtons = new FlowLayoutPanel();
+            lbl_skipDrawingGrid = new Label();
+            check_skipDrawingGrid = new CheckBox();
             layout_main.SuspendLayout();
             layout_controls.SuspendLayout();
             group_grid.SuspendLayout();
@@ -170,6 +174,8 @@
             layout_gridParams.ColumnCount = 2;
             layout_gridParams.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 36.23544F));
             layout_gridParams.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 63.76456F));
+            layout_gridParams.Controls.Add(check_skipDrawingGrid, 1, 3);
+            layout_gridParams.Controls.Add(lbl_skipDrawingGrid, 0, 3);
             layout_gridParams.Controls.Add(lbl_gridWrapping, 0, 2);
             layout_gridParams.Controls.Add(lbl_gridHeight, 0, 1);
             layout_gridParams.Controls.Add(num_gridWidth, 1, 0);
@@ -180,11 +186,12 @@
             layout_gridParams.Location = new Point(3, 24);
             layout_gridParams.Margin = new Padding(0);
             layout_gridParams.Name = "layout_gridParams";
-            layout_gridParams.RowCount = 4;
+            layout_gridParams.RowCount = 5;
             layout_gridParams.RowStyles.Add(new RowStyle());
             layout_gridParams.RowStyles.Add(new RowStyle());
             layout_gridParams.RowStyles.Add(new RowStyle(SizeType.Absolute, 27F));
             layout_gridParams.RowStyles.Add(new RowStyle(SizeType.Absolute, 27F));
+            layout_gridParams.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             layout_gridParams.RowStyles.Add(new RowStyle(SizeType.Absolute, 27F));
             layout_gridParams.Size = new Size(455, 385);
             layout_gridParams.TabIndex = 0;
@@ -539,10 +546,10 @@
             layout_rightConsoleButtons.Controls.Add(btn_clearConsole);
             layout_rightConsoleButtons.Dock = DockStyle.Fill;
             layout_rightConsoleButtons.FlowDirection = FlowDirection.RightToLeft;
-            layout_rightConsoleButtons.Location = new Point(0, 856);
+            layout_rightConsoleButtons.Location = new Point(0, 855);
             layout_rightConsoleButtons.Margin = new Padding(0);
             layout_rightConsoleButtons.Name = "layout_rightConsoleButtons";
-            layout_rightConsoleButtons.Size = new Size(901, 44);
+            layout_rightConsoleButtons.Size = new Size(901, 45);
             layout_rightConsoleButtons.TabIndex = 11;
             // 
             // btn_saveImage
@@ -574,7 +581,7 @@
             // 
             // text_console
             // 
-            text_console.Location = new Point(3, 674);
+            text_console.Location = new Point(3, 673);
             text_console.Multiline = true;
             text_console.Name = "text_console";
             text_console.Size = new Size(895, 178);
@@ -591,7 +598,7 @@
             layout_pictureBoxContainer.Name = "layout_pictureBoxContainer";
             layout_pictureBoxContainer.RowCount = 1;
             layout_pictureBoxContainer.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            layout_pictureBoxContainer.Size = new Size(901, 671);
+            layout_pictureBoxContainer.Size = new Size(901, 670);
             layout_pictureBoxContainer.TabIndex = 3;
             // 
             // picture_imageDisplay
@@ -604,6 +611,26 @@
             picture_imageDisplay.Size = new Size(100, 100);
             picture_imageDisplay.TabIndex = 1;
             picture_imageDisplay.TabStop = false;
+            // 
+            // lbl_skipDrawingGrid
+            // 
+            lbl_skipDrawingGrid.AutoSize = true;
+            lbl_skipDrawingGrid.Location = new Point(3, 97);
+            lbl_skipDrawingGrid.Name = "lbl_skipDrawingGrid";
+            lbl_skipDrawingGrid.Size = new Size(126, 20);
+            lbl_skipDrawingGrid.TabIndex = 6;
+            lbl_skipDrawingGrid.Text = "Skip drawing grid";
+            // 
+            // check_skipDrawingGrid
+            // 
+            check_skipDrawingGrid.AutoSize = true;
+            check_skipDrawingGrid.DataBindings.Add(new Binding("Checked", binding_simulationViewModel, "SkipDrawingUntilFinished", true));
+            check_skipDrawingGrid.Location = new Point(167, 101);
+            check_skipDrawingGrid.Margin = new Padding(3, 4, 3, 4);
+            check_skipDrawingGrid.Name = "check_skipDrawingGrid";
+            check_skipDrawingGrid.Size = new Size(18, 17);
+            check_skipDrawingGrid.TabIndex = 7;
+            check_skipDrawingGrid.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 

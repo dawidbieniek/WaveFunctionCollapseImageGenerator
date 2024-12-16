@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
+using WaveFunctionCollapseImageGenerator.Models.Cells;
 using WaveFunctionCollapseImageGenerator.Models.Exceptions;
 
 namespace WaveFunctionCollapseImageGenerator.Models.Simulation.Runner;
@@ -23,9 +24,9 @@ public partial class SimulationRunner(IWFCSimulation simulation) : ObservableObj
     private Task? _loopTask;
 
     public event SimulationStepEventHandler OnSimulationStep = delegate { };
-    public event EventHandler OnBacktrackingStackEmptyError = delegate { };
+    public event EventHandler<CellGrid> OnBacktrackingStackEmptyError = delegate { };
     public event InvalidCellCollapseEventHandler OnInvalidCellCollapseError = delegate { };
-    public event EventHandler OnSimulationFinished = delegate { };
+    public event SimulationStepEventHandler OnSimulationFinished = delegate { };
 
     public void StepSimulation()
     {
@@ -89,7 +90,7 @@ public partial class SimulationRunner(IWFCSimulation simulation) : ObservableObj
                     _loopCts.Cancel();
                     IsSimulationRunning = false;
                     CanContinueSimulation = false;
-                    OnSimulationFinished?.Invoke(this, EventArgs.Empty);
+                    OnSimulationFinished?.Invoke(this, new(_simulation.Grid));
                 }
             }
         }
@@ -103,7 +104,7 @@ public partial class SimulationRunner(IWFCSimulation simulation) : ObservableObj
         {
             _loopCts.Cancel();
             CanContinueSimulation = false;
-            OnBacktrackingStackEmptyError?.Invoke(this, EventArgs.Empty);
+            OnBacktrackingStackEmptyError?.Invoke(this, _simulation.Grid);
         }
     }
 

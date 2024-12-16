@@ -40,6 +40,9 @@ public partial class SimulationViewModel : ObservableObject
     [ObservableProperty]
     private bool _enableResetButton = true;
 
+    [ObservableProperty]
+    private bool _skipDrawingUntilFinished = false;
+
     private SimulationRunner? _simulationRunner;
 
     public SimulationViewModel(ITilesetProvider tilesetProvider, IGridProvider gridProvider, IImageDisplayer imageDisplayer, ILoggerFactory loggerFactory)
@@ -131,10 +134,14 @@ public partial class SimulationViewModel : ObservableObject
         });
         _simulationRunner.OnSimulationStep += (s, e) => Application.OpenForms[0]!.Invoke(() =>
         {
-            _imageDisplayer.DisplayGrid(e.CurrentSimulationCellGrid);
+            if (!SkipDrawingUntilFinished)
+                _imageDisplayer.DisplayGrid(e.CurrentSimulationCellGrid);
         });
         _simulationRunner.OnBacktrackingStackEmptyError += (s, e) => Application.OpenForms[0]!.Invoke(() =>
         {
+            if (SkipDrawingUntilFinished)
+                _imageDisplayer.DisplayGrid(e);
+
             _logger.LogError("Simulation stopped: simulation needs to backtrack, but snapshot stack is empty. Consider using bigger stack size");
             UpdateButtonEnablement();
         });
@@ -147,9 +154,10 @@ public partial class SimulationViewModel : ObservableObject
         });
         _simulationRunner.OnSimulationFinished += (s, e) => Application.OpenForms[0]!.Invoke(() =>
         {
+            if (SkipDrawingUntilFinished)
+                _imageDisplayer.DisplayGrid(e.CurrentSimulationCellGrid);
             _logger.LogInformation("Simulation finished");
         });
-
 
         _gridProvider.LockChanges();
 
