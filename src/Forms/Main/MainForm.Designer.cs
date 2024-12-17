@@ -57,7 +57,7 @@
             CheckBox check_backtracking;
             FlowLayoutPanel layout_simulationButtons;
             TableLayoutPanel layout_right;
-            FlowLayoutPanel layout_rightConsoleButtons;
+            TableLayoutPanel layout_pictureInfo;
             binding_simulationViewModel = new BindingSource(components);
             binding_gridViewModel = new BindingSource(components);
             binding_tilesetViewModel = new BindingSource(components);
@@ -69,10 +69,11 @@
             btn_run = new Button();
             text_console = new TextBox();
             btn_clearConsole = new Button();
-            btn_saveImage = new Button();
-            binding_imageViewModel = new BindingSource(components);
             layout_pictureBoxContainer = new TableLayoutPanel();
             picture_imageDisplay = new PictureBox();
+            binding_imageViewModel = new BindingSource(components);
+            lbl_pictureSize = new Label();
+            btn_saveImage = new Button();
             layout_main = new TableLayoutPanel();
             layout_controls = new FlowLayoutPanel();
             group_grid = new GroupBox();
@@ -101,7 +102,7 @@
             check_backtracking = new CheckBox();
             layout_simulationButtons = new FlowLayoutPanel();
             layout_right = new TableLayoutPanel();
-            layout_rightConsoleButtons = new FlowLayoutPanel();
+            layout_pictureInfo = new TableLayoutPanel();
             layout_main.SuspendLayout();
             layout_controls.SuspendLayout();
             group_grid.SuspendLayout();
@@ -121,10 +122,10 @@
             ((System.ComponentModel.ISupportInitialize)num_backtrackingDepth).BeginInit();
             layout_simulationButtons.SuspendLayout();
             layout_right.SuspendLayout();
-            layout_rightConsoleButtons.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)binding_imageViewModel).BeginInit();
             layout_pictureBoxContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picture_imageDisplay).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)binding_imageViewModel).BeginInit();
+            layout_pictureInfo.SuspendLayout();
             SuspendLayout();
             // 
             // layout_main
@@ -562,8 +563,8 @@
             // 
             layout_right.ColumnCount = 1;
             layout_right.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            layout_right.Controls.Add(layout_rightConsoleButtons, 0, 1);
             layout_right.Controls.Add(layout_pictureBoxContainer, 0, 0);
+            layout_right.Controls.Add(layout_pictureInfo, 0, 1);
             layout_right.Dock = DockStyle.Fill;
             layout_right.Location = new Point(336, 0);
             layout_right.Margin = new Padding(0);
@@ -574,32 +575,6 @@
             layout_right.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             layout_right.Size = new Size(700, 729);
             layout_right.TabIndex = 6;
-            // 
-            // layout_rightConsoleButtons
-            // 
-            layout_rightConsoleButtons.Controls.Add(btn_saveImage);
-            layout_rightConsoleButtons.Dock = DockStyle.Fill;
-            layout_rightConsoleButtons.FlowDirection = FlowDirection.RightToLeft;
-            layout_rightConsoleButtons.Location = new Point(0, 700);
-            layout_rightConsoleButtons.Margin = new Padding(0);
-            layout_rightConsoleButtons.Name = "layout_rightConsoleButtons";
-            layout_rightConsoleButtons.Size = new Size(700, 29);
-            layout_rightConsoleButtons.TabIndex = 11;
-            // 
-            // btn_saveImage
-            // 
-            btn_saveImage.DataBindings.Add(new Binding("Command", binding_imageViewModel, "SaveImageCommand", true));
-            btn_saveImage.DataBindings.Add(new Binding("Enabled", binding_simulationViewModel, "EnableResetButton", true));
-            btn_saveImage.Location = new Point(584, 3);
-            btn_saveImage.Name = "btn_saveImage";
-            btn_saveImage.Size = new Size(113, 23);
-            btn_saveImage.TabIndex = 1;
-            btn_saveImage.Text = "Save image";
-            btn_saveImage.UseVisualStyleBackColor = true;
-            // 
-            // binding_imageViewModel
-            // 
-            binding_imageViewModel.DataSource = typeof(ViewModels.MainForm.Components.ImageViewModel);
             // 
             // layout_pictureBoxContainer
             // 
@@ -624,6 +599,48 @@
             picture_imageDisplay.Size = new Size(100, 100);
             picture_imageDisplay.TabIndex = 1;
             picture_imageDisplay.TabStop = false;
+            // 
+            // binding_imageViewModel
+            // 
+            binding_imageViewModel.DataSource = typeof(ViewModels.MainForm.Components.ImageViewModel);
+            // 
+            // layout_pictureInfo
+            // 
+            layout_pictureInfo.ColumnCount = 3;
+            layout_pictureInfo.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 160F));
+            layout_pictureInfo.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            layout_pictureInfo.ColumnStyles.Add(new ColumnStyle());
+            layout_pictureInfo.Controls.Add(lbl_pictureSize, 0, 0);
+            layout_pictureInfo.Controls.Add(btn_saveImage, 2, 0);
+            layout_pictureInfo.Dock = DockStyle.Fill;
+            layout_pictureInfo.Location = new Point(0, 700);
+            layout_pictureInfo.Margin = new Padding(0);
+            layout_pictureInfo.Name = "layout_pictureInfo";
+            layout_pictureInfo.RowCount = 1;
+            layout_pictureInfo.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            layout_pictureInfo.Size = new Size(700, 29);
+            layout_pictureInfo.TabIndex = 4;
+            // 
+            // lbl_pictureSize
+            // 
+            lbl_pictureSize.Anchor = AnchorStyles.Left;
+            lbl_pictureSize.AutoSize = true;
+            lbl_pictureSize.Location = new Point(3, 7);
+            lbl_pictureSize.Name = "lbl_pictureSize";
+            lbl_pictureSize.Size = new Size(25, 15);
+            lbl_pictureSize.TabIndex = 13;
+            lbl_pictureSize.Text = "0x0";
+            // 
+            // btn_saveImage
+            // 
+            btn_saveImage.DataBindings.Add(new Binding("Command", binding_imageViewModel, "SaveImageCommand", true));
+            btn_saveImage.DataBindings.Add(new Binding("Enabled", binding_simulationViewModel, "EnableResetButton", true));
+            btn_saveImage.Location = new Point(584, 3);
+            btn_saveImage.Name = "btn_saveImage";
+            btn_saveImage.Size = new Size(113, 23);
+            btn_saveImage.TabIndex = 1;
+            btn_saveImage.Text = "Save image";
+            btn_saveImage.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
@@ -662,10 +679,11 @@
             ((System.ComponentModel.ISupportInitialize)num_backtrackingDepth).EndInit();
             layout_simulationButtons.ResumeLayout(false);
             layout_right.ResumeLayout(false);
-            layout_rightConsoleButtons.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)binding_imageViewModel).EndInit();
             layout_pictureBoxContainer.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)picture_imageDisplay).EndInit();
+            ((System.ComponentModel.ISupportInitialize)binding_imageViewModel).EndInit();
+            layout_pictureInfo.ResumeLayout(false);
+            layout_pictureInfo.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -685,5 +703,6 @@
         private TableLayoutPanel layout_pictureBoxContainer;
         private Button btn_saveImage;
         private Button btn_clearConsole;
+        private Label lbl_pictureSize;
     }
 }

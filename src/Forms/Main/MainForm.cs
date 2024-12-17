@@ -37,6 +37,8 @@ namespace WaveFunctionCollapseImageGenerator
 
         private void ScaleImage(Size requestedImageSize)
         {
+            lbl_pictureSize.Text = $"{requestedImageSize.Width}x{requestedImageSize.Height}";
+
             if (requestedImageSize.Width > layout_pictureBoxContainer.Size.Width || requestedImageSize.Height > layout_pictureBoxContainer.Size.Height)
             {
                 picture_imageDisplay.Size = new(Math.Min(layout_pictureBoxContainer.Width, requestedImageSize.Width), Math.Min(layout_pictureBoxContainer.Height, requestedImageSize.Height));
@@ -50,10 +52,5 @@ namespace WaveFunctionCollapseImageGenerator
         }
 
         private void Btn_clearConsole_Click(object sender, EventArgs e) => text_console.Clear();
-
-        private void Btn_saveImage_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }
