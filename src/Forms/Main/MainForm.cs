@@ -53,7 +53,7 @@ namespace WaveFunctionCollapseImageGenerator
 
         private void Btn_saveImage_Click(object sender, EventArgs e)
         {
-            
+
         }
     }
 }
