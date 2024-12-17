@@ -23,10 +23,11 @@ public partial class SimulationRunner(IWFCSimulation simulation) : ObservableObj
 
     private Task? _loopTask;
 
-    public event SimulationStepEventHandler OnSimulationStep = delegate { };
-    public event EventHandler<CellGrid> OnBacktrackingStackEmptyError = delegate { };
-    public event InvalidCellCollapseEventHandler OnInvalidCellCollapseError = delegate { };
-    public event SimulationStepEventHandler OnSimulationFinished = delegate { };
+    public event SimulationStepEventHandler SimulationStep = delegate { };
+    public event EventHandler<CellGrid> BacktrackingStackEmptyError = delegate { };
+    public event InvalidCellCollapseEventHandler InvalidCellCollapseError = delegate { };
+    public event SimulationStepEventHandler SimulationFinished = delegate { };
+    public event EventHandler<CellGrid> SimulationPaused = delegate { };
 
     public void StepSimulation()
     {
@@ -47,7 +48,7 @@ public partial class SimulationRunner(IWFCSimulation simulation) : ObservableObj
         if (IsSimulationRunning || !CanContinueSimulation)
             return;
 
-        if(_loopTask is null)
+        if (_loopTask is null)
             _loopTask = Task.Run(RunnerLoop, _loopCts.Token);
 
         _loopPauseSemaphore.Release();
@@ -58,6 +59,8 @@ public partial class SimulationRunner(IWFCSimulation simulation) : ObservableObj
     {
         await _loopPauseSemaphore.WaitAsync();
         IsSimulationRunning = false;
+
+        SimulationPaused?.Invoke(this, _simulation.Grid);
     }
 
     public void StopSimulation()
@@ -83,14 +86,14 @@ public partial class SimulationRunner(IWFCSimulation simulation) : ObservableObj
             using (_simulationStepLock.EnterScope())
             {
                 _simulation.Step();
-                OnSimulationStep?.Invoke(this, new(_simulation.Grid));
+                SimulationStep?.Invoke(this, new(_simulation.Grid));
 
-                if(_simulation.IsFinished)
+                if (_simulation.IsFinished)
                 {
                     _loopCts.Cancel();
                     IsSimulationRunning = false;
                     CanContinueSimulation = false;
-                    OnSimulationFinished?.Invoke(this, new(_simulation.Grid));
+                    SimulationFinished?.Invoke(this, new(_simulation.Grid));
                 }
             }
         }
@@ -98,13 +101,13 @@ public partial class SimulationRunner(IWFCSimulation simulation) : ObservableObj
         {
             _loopCts.Cancel();
             CanContinueSimulation = false;
-            OnInvalidCellCollapseError?.Invoke(this, new(ex, _simulation.Grid));
+            InvalidCellCollapseError?.Invoke(this, new(ex, _simulation.Grid));
         }
         catch (BacktrackingStackEmptyException)
         {
             _loopCts.Cancel();
             CanContinueSimulation = false;
-            OnBacktrackingStackEmptyError?.Invoke(this, _simulation.Grid);
+            BacktrackingStackEmptyError?.Invoke(this, _simulation.Grid);
         }
     }
 

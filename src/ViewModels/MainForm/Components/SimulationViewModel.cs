@@ -1,6 +1,4 @@
-﻿using System.Windows.Forms.Design;
-
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using Microsoft.Extensions.Logging;
@@ -8,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using WaveFunctionCollapseImageGenerator.Models.Simulation;
 using WaveFunctionCollapseImageGenerator.Models.Simulation.Runner;
 using WaveFunctionCollapseImageGenerator.ViewModels.MainForm.Components;
-using WaveFunctionCollapseImageGenerator.ViewModels.MainForm.Components.Helper;
 
 namespace WaveFunctionCollapseImageGenerator.ViewModels.MainForm;
 
@@ -132,12 +129,12 @@ public partial class SimulationViewModel : ObservableObject
                     break;
             }
         });
-        _simulationRunner.OnSimulationStep += (s, e) => Application.OpenForms[0]!.Invoke(() =>
+        _simulationRunner.SimulationStep += (s, e) => Application.OpenForms[0]!.Invoke(() =>
         {
             if (!SkipDrawingUntilFinished)
                 _imageDisplayer.DisplayGrid(e.CurrentSimulationCellGrid);
         });
-        _simulationRunner.OnBacktrackingStackEmptyError += (s, e) => Application.OpenForms[0]!.Invoke(() =>
+        _simulationRunner.BacktrackingStackEmptyError += (s, e) => Application.OpenForms[0]!.Invoke(() =>
         {
             if (SkipDrawingUntilFinished)
                 _imageDisplayer.DisplayGrid(e);
@@ -145,19 +142,24 @@ public partial class SimulationViewModel : ObservableObject
             _logger.LogError("Simulation stopped: simulation needs to backtrack, but snapshot stack is empty. Consider using bigger stack size");
             UpdateButtonEnablement();
         });
-        _simulationRunner.OnInvalidCellCollapseError += (s, e) => Application.OpenForms[0]!.Invoke(() =>
+        _simulationRunner.InvalidCellCollapseError += (s, e) => Application.OpenForms[0]!.Invoke(() =>
         {
             _logger.LogError("Simulation stopped: {message}", e.Exception.Message);
             UpdateButtonEnablement();
 
             _imageDisplayer.DisplayGridWithErrorCell(e.SimulationCellGrid, e.Exception.InvalidCell.X, e.Exception.InvalidCell.Y);
         });
-        _simulationRunner.OnSimulationFinished += (s, e) => Application.OpenForms[0]!.Invoke(() =>
+        _simulationRunner.SimulationFinished += (s, e) => Application.OpenForms[0]!.Invoke(() =>
         {
             if (SkipDrawingUntilFinished)
                 _imageDisplayer.DisplayGrid(e.CurrentSimulationCellGrid);
             _logger.LogInformation("Simulation finished");
         });
+        _simulationRunner.SimulationPaused += (s, e) =>
+        {
+            if (SkipDrawingUntilFinished)
+                _imageDisplayer.DisplayGrid(e);
+        };
 
         _gridProvider.LockChanges();
 
