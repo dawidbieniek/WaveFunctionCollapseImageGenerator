@@ -19,6 +19,10 @@ public partial class SimulationViewModel : ObservableObject
     private readonly WFCSimulationFactory _wfcSimulationFactory;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(UseSeed))]
+    private bool _allowEditing = true;
+
+    [ObservableProperty]
     private bool _useBacktracking = false;
     [ObservableProperty]
     private int _backtrackingDepth = 10;
@@ -54,7 +58,7 @@ public partial class SimulationViewModel : ObservableObject
         UpdateButtonEnablement();
     }
 
-    public bool UseSeed => !RandomizeSeed;
+    public bool UseSeed => !RandomizeSeed && AllowEditing;
 
     [RelayCommand]
     public void StepSimulation()
@@ -79,6 +83,7 @@ public partial class SimulationViewModel : ObservableObject
         UpdateButtonEnablement();
         _gridProvider.UnlockChanges();
         _imageDisplayer.ClearImage();
+        AllowEditing = true;
 
         _logger.LogInformation("Simulation reset");
     }
@@ -162,6 +167,7 @@ public partial class SimulationViewModel : ObservableObject
         };
 
         _gridProvider.LockChanges();
+        AllowEditing = false;
 
         _logger.LogInformation("Simulation created");
     }

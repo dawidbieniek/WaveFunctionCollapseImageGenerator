@@ -321,6 +321,7 @@
             combo_tileset.Anchor = AnchorStyles.Left;
             combo_tileset.BackColor = SystemColors.ControlLight;
             combo_tileset.DataBindings.Add(new Binding("SelectedItem", binding_tilesetViewModel, "SelectedTileset", true));
+            combo_tileset.DataBindings.Add(new Binding("Enabled", binding_gridViewModel, "AllowEditing", true));
             combo_tileset.DataSource = data_availableTilesets;
             combo_tileset.DisplayMember = "Name";
             combo_tileset.FormattingEnabled = true;
@@ -474,6 +475,7 @@
             check_backtracking.Anchor = AnchorStyles.Left;
             check_backtracking.AutoSize = true;
             check_backtracking.DataBindings.Add(new Binding("Checked", binding_simulationViewModel, "UseBacktracking", true, DataSourceUpdateMode.OnPropertyChanged));
+            check_backtracking.DataBindings.Add(new Binding("Enabled", binding_gridViewModel, "AllowEditing", true));
             check_backtracking.Location = new Point(118, 7);
             check_backtracking.Name = "check_backtracking";
             check_backtracking.Size = new Size(15, 14);
