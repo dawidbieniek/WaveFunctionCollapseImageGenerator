@@ -655,6 +655,7 @@
             MaximizeBox = false;
             Name = "MainForm";
             Padding = new Padding(10);
+            ShowIcon = false;
             Text = "Wave Function Collapse Image Generator";
             Load += MainForm_Load;
             layout_main.ResumeLayout(false);
