@@ -51,7 +51,7 @@ Here are some examples of the generated images and the application interface:
 ![Example Screenshot][app-screenshot]
 
 <!-- MARKDOWN LINKS & IMAGES -->
-[app-screenshot]: https://placehold.co/600x400
+[app-screenshot]: img/app-screenshot.png
 [dotnet-badge]: https://img.shields.io/badge/.NET-512BD4?style=for-the-badge&logo=dotnet&logoColor=white
 [dotnet-url]: https://dotnet.microsoft.com/en-us/
 [winforms-badge]: https://img.shields.io/badge/WinForms-512BD4?style=for-the-badge
