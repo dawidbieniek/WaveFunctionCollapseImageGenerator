@@ -20,6 +20,7 @@ This repository contains a lightweight WinForms app that leverages the Wave Func
 - **Automatic Backtracking:** Recovers from dead-ends by reverting to previous valid states.
 - **Multiple Tilesets:** Choose from several built-in tilesets to vary the output.
 - **Generation Modes:** Watch the image form in real time or step through each step manually.
+- **Saving Images:** Save generated images as PNG, BMP or JPG
 
 <!-- GETTING STARTED -->
 ## Getting Started
