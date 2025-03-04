@@ -12,8 +12,9 @@
 This repository contains a lightweight WinForms app that leverages the Wave Function Collapse algorithm to generate images from build-in tilesets. The app simulates the "collapse" of each cell into one of several available states, resulting creation of different patterns.
 
 ### Built With
-- [![.NET][dotnet-badge]][dotnet-url]
-- [![WinForms][winforms-badge]][winforms-url]
+[![.NET][dotnet-badge]][dotnet-url]
+
+[![WinForms][winforms-badge]][winforms-url]
 
 ### Features
 - **Procedural Image Generation:** Utilizes the Wave Function Collapse algorithm to produce unique images.
@@ -46,12 +47,20 @@ The application is designed to run on Windows systems.
   Find the generated executable in the **bin/Release/net9.0-windows/** folder and launch it.
 
 ## Screenshots
-Here are some examples of the generated images and the application interface:
+### Different pattern each time
+![Patterns][ss-patterns]
 
-![Example Screenshot][app-screenshot]
+### Several build-in tilesets
+![Tilesets][ss-tilesets]
+
+### Backtracking allows fixing invalid cell states
+![Backtracking][ss-backtracking]
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [app-screenshot]: img/app-screenshot.png
+[ss-patterns]: img/patterns.png
+[ss-tilesets]: img/tilesets.png
+[ss-backtracking]: img/backtracking.png
 [dotnet-badge]: https://img.shields.io/badge/.NET-512BD4?style=for-the-badge&logo=dotnet&logoColor=white
 [dotnet-url]: https://dotnet.microsoft.com/en-us/
 [winforms-badge]: https://img.shields.io/badge/WinForms-512BD4?style=for-the-badge
