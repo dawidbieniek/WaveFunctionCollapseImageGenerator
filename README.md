@@ -39,6 +39,7 @@ The application is designed to run on Windows systems.
    git clone https://github.com/dawidbieniek/WaveFunctionCollapseImageGenerator.git
    ```
 3. **Build the Project**
+
    Navigate to the src/ directory and build the project:
    ``` sh
    dotnet build -c Release
